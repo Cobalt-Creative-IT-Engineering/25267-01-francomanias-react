@@ -1,7 +1,6 @@
 // ─── Page Ancienne Édition ────────────────────────────────────────────────────
 // Route : #/edition/{slug}
 // Charge une édition passée depuis le CPT "ancienne-edition" via REST.
-import React from "react";
 import { useCPT, useMediaBatch } from "../hooks/useWordPress";
 import { WPContent } from "../components/ui";
 import type { AncieneEditionEntry } from "../types/wordpress";
