@@ -1,7 +1,9 @@
 // ─── Page Détail Actualité ────────────────────────────────────────────────────
 // Route : #/actualite/{slug}
+import { useEffect } from "react";
 import { useCPT, useMediaBatch } from "../hooks/useWordPress";
 import { WPContent } from "../components/ui";
+import { setPageMeta } from "../lib/meta";
 import type { ActualiteEntry } from "../types/wordpress";
 
 export function ActualiteDetailPage({ slug }: { slug: string }) {
@@ -47,6 +49,14 @@ export function ActualiteDetailPage({ slug }: { slug: string }) {
     : (typeof entry.acf?.photo === "object" && entry.acf?.photo
         ? (entry.acf.photo as { url: string }).url
         : null);
+
+  const description = contenu
+    ? contenu.replace(/<[^>]*>/g, "").trim().slice(0, 160)
+    : undefined;
+
+  useEffect(() => {
+    setPageMeta({ title, description, image: photoUrl ?? undefined, type: "article" });
+  }, [title, description, photoUrl]);
 
   return (
     <main className="edition-detail actu-detail">

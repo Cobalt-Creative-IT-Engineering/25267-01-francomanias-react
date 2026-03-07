@@ -3,7 +3,11 @@
 // version statique de référence.
 import { useGraphQLOptions } from "../hooks/useWordPress";
 import { useScrollSpy } from "../hooks/useScrollSpy";
-import { WPContent } from "../components/ui";
+import { WPContent, Sticker } from "../components/ui";
+import sticker09 from "../assets/images/stickers/Franco2026_Sticker_09.png";
+import sticker01 from "../assets/images/stickers/Franco2026_Sticker_01.png";
+import sticker03 from "../assets/images/stickers/Franco2026_Sticker_03.png";
+import sticker07 from "../assets/images/stickers/Franco2026_Sticker_07.png";
 
 const NAV = [
   { label: "Transports & Accès",  id: "transports" },
@@ -50,6 +54,10 @@ export function InfosPratiquesPage() {
               {item.label}
             </a>
           ))}
+          <div className="side-stickers">
+            <Sticker src={sticker09} size={90} rotate={-10} style={{ top: 0, left: 0 }} />
+            <Sticker src={sticker01} size={90} rotate={14} style={{ top: 10, right: 0 }} />
+          </div>
         </aside>
 
         <section className="content-column">
@@ -59,6 +67,8 @@ export function InfosPratiquesPage() {
               <div key={item.id} id={item.id} className="ip-section">
                 <h2>{item.label}</h2>
                 {html && <WPContent html={html} className="prose-custom" />}
+                {item.id === "scenes"      && <Sticker src={sticker03} size={120} rotate={-7}  style={{ bottom: 16, right: 16 }} />}
+                {item.id === "hebergement" && <Sticker src={sticker07} size={120} rotate={10}  style={{ bottom: 16, right: 16 }} />}
               </div>
             );
           })}

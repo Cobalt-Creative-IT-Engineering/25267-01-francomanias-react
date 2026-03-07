@@ -14,10 +14,9 @@ import { WPPageView }        from "./pages/WPPageView";
 import { ACTIVE_THEME }      from "./config/site";
 import { THEMES }            from "./themes/index";
 import { Decorations }       from "./themes/Decorations";
+import { initMeta, setPageMeta } from "./lib/meta";
 
 // ─── Application du thème ─────────────────────────────────────────────────────
-// Exécuté de façon synchrone au chargement du module, avant le premier rendu
-// React — garantit zéro flash de contenu non stylé (FOUC).
 const _theme = THEMES[ACTIVE_THEME];
 document.documentElement.classList.add(_theme.cssClass);
 if (_theme.fontsUrl) {
@@ -28,16 +27,38 @@ if (_theme.fontsUrl) {
 }
 // ──────────────────────────────────────────────────────────────────────────────
 
+const PAGE_LABELS: Record<string, string> = {
+  "#/programmation":  "Programmation",
+  "#/informations":   "Infos pratiques",
+  "#/festival":       "Le Festival",
+  "#/le-festival":    "Le Festival",
+  "#/billetterie":    "Billetterie",
+};
+
+function getPageLabel(route: string): string | undefined {
+  if (route === "#/" || route === "") return undefined;
+  if (PAGE_LABELS[route]) return PAGE_LABELS[route];
+  if (route.startsWith("#/programmation/")) return "Programmation";
+  if (route.startsWith("#/edition/"))       return "Archives";
+  if (route.startsWith("#/actualite/"))     return "Actualités";
+  return undefined;
+}
+
 export default function App() {
   const { route, slug, anchor } = useRoute();
 
-  // Titre de l'onglet depuis WordPress
+  // Infos du site WordPress (une seule fois) → initialise le module meta
   useEffect(() => {
     fetch("/wp-json/")
       .then((r) => r.json())
-      .then((d) => { if (d?.name) document.title = d.name; })
+      .then((d) => { initMeta(d?.name ?? "", d?.description ?? ""); })
       .catch(() => {});
   }, []);
+
+  // Meta par défaut selon la route (les pages de détail écrasent avec leurs propres infos)
+  useEffect(() => {
+    setPageMeta({ title: getPageLabel(route) });
+  }, [route]);
 
   // Scroll : ancre si présente, sinon remonte en haut
   useEffect(() => {
@@ -63,6 +84,7 @@ export default function App() {
 function PageView({ route, slug }: { route: string; slug: string | null }) {
   if (route === "#/" || route === "")        return <HomePage />;
   if (route === "#/programmation")           return <ProgrammationPage />;
+  if (route.startsWith("#/programmation/"))  return <ProgrammationPage initialSlug={route.replace("#/programmation/", "")} />;
   if (route === "#/informations")            return <InfosPratiquesPage />;
   if (route === "#/festival")                return <LeFestivalPage />;
   if (route === "#/le-festival")             return <LeFestivalPage />;

@@ -1,8 +1,10 @@
 import React from "react";
 import { useCPT, useMediaBatch, prefetchCPTItems } from "../hooks/useWordPress";
-import type { ActualiteEntry, PartenaireEntry } from "../types/wordpress";
+import { Sticker } from "../components/ui";
+import type { ActualiteEntry, PartenaireEntry, ProgrammationEntry } from "../types/wordpress";
 import logoCompact from "../assets/logo/francomanias-compact-2026.svg";
 import heroGif from "../assets/images/textures/motions/Francomanias_Animation_02.gif";
+import sticker09 from "../assets/images/stickers/Franco2026_Sticker_09.png";
 
 // ─── Carte actualité ───────────────────────────────────────────────────────
 
@@ -52,6 +54,7 @@ export function HomePage() {
     order: "desc",
   });
   const { data: partenaires } = useCPT<PartenaireEntry>("partenaire", { perPage: 50 });
+  const { data: artistes }    = useCPT<ProgrammationEntry>("artiste", { perPage: 100, orderby: "date", order: "asc" });
 
   // Résolution batch de tous les IDs média (photos actualités + logos partenaires)
   const actualitePhotoIds = (actualites ?? [])
@@ -116,10 +119,21 @@ export function HomePage() {
             aria-label="Francomanias"
           />
         </div>
+        <button
+          className="hero-scroll-arrow"
+          aria-label="Défiler vers le bas"
+          onClick={() => {
+            document.querySelector<HTMLElement>(".home-section")
+              ?.scrollIntoView({ behavior: "smooth", block: "start" });
+          }}
+        >
+          ↓
+        </button>
       </section>
 
       {/* ── 2. Actualités — fond blanc, titre centré, carousel ────────── */}
-      <section className="home-section home-section--white">
+      <section className="home-section home-section--white" style={{ position: "relative" }}>
+        <Sticker src={sticker09} size={130} rotate={12} style={{ bottom: 24, right: 24 }} />
         <div className="home-section-inner">
           <h2 className="home-section-title home-section-title--center">Actualités</h2>
         </div>
@@ -149,7 +163,22 @@ export function HomePage() {
 
       {/* ── 3. Line-Up — fond color-2 ─────────────────────────────────── */}
       <section className="lineup-banner home-section">
-        <a href="#/programmation" className="lineup-link">Line-Up</a>
+        <div className="lineup-inner">
+          <a href="#/programmation" className="lineup-link">Line-Up</a>
+          {artistes && artistes.length > 0 && (
+            <p className="lineup-names">
+              {artistes.map((a, i) => {
+                const nom = (a.acf?.nom as string | undefined) || a.title?.rendered || "";
+                return (
+                  <React.Fragment key={a.id}>
+                    <a href={`#/programmation/${a.slug}`} className="lineup-name">{nom}</a>
+                    {i < artistes.length - 1 && <span className="lineup-sep" aria-hidden="true"> · </span>}
+                  </React.Fragment>
+                );
+              })}
+            </p>
+          )}
+        </div>
       </section>
 
       {/* ── 4. Partenaires — fond blanc ────────────────────────────────── */}

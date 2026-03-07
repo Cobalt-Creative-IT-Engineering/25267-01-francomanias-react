@@ -1,9 +1,10 @@
 import React, { useMemo, useState } from "react";
 import { useCPT, useTaxonomyTerms, useMediaBatch } from "../hooks/useWordPress";
 import { acfReader } from "../components/acf";
-import { ErrorBanner, Skeleton } from "../components/ui";
+import { ErrorBanner, Skeleton, Sticker } from "../components/ui";
 import { ArtistACF } from "../config/acf-schemas";
 import type { ProgrammationEntry } from "../types/wordpress";
+import sticker04 from "../assets/images/stickers/Franco2026_Sticker_04.png";
 
 const LazyArtistModal = React.lazy(() => import("./ArtistModal"));
 
@@ -17,7 +18,7 @@ function formatAcfDate(raw: string | null): string {
 
 type MediaMap = Map<number, { url: string; alt: string }>;
 
-export function ProgrammationPage() {
+export function ProgrammationPage({ initialSlug }: { initialSlug?: string } = {}) {
   const { status, data, error } = useCPT<ProgrammationEntry>("artiste", {
     perPage: 100,
     orderby: "date",
@@ -29,6 +30,13 @@ export function ProgrammationPage() {
   const [selectedJour, setSelectedJour] = useState<number | null>(null);
   const [selectedLieu, setSelectedLieu] = useState<number | null>(null);
   const [activeArtist, setActiveArtist] = useState<ProgrammationEntry | null>(null);
+
+  // Ouvre automatiquement le modal si un slug initial est fourni (navigation depuis l'accueil)
+  React.useEffect(() => {
+    if (!initialSlug || !data?.length) return;
+    const found = data.find((i) => i.slug === initialSlug);
+    if (found) setActiveArtist(found);
+  }, [initialSlug, data]);
 
   const jourMap = useMemo(() => new Map((jourTerms ?? []).map((t) => [t.id, t.name])), [jourTerms]);
   const lieuMap = useMemo(() => new Map((lieuTerms ?? []).map((t) => [t.id, t.name])), [lieuTerms]);
@@ -123,17 +131,20 @@ export function ProgrammationPage() {
         <ErrorBanner message={error ?? "Erreur de chargement"} />
       ) : (
         <>
-          {noneVisible && <ErrorBanner message="Aucun artiste pour ces filtres." />}
-          <div className="program-grid">
-            {items.map((item) => (
-              <ArtistCard
-                key={item.id}
-                item={item}
-                mediaMap={mediaMap}
-                visible={isVisible(item)}
-                onClick={() => setActiveArtist(item)}
-              />
-            ))}
+          {noneVisible && <ErrorBanner message="Aucun artiste n'est disponible pour ces filtres." />}
+          <div className="program-grid-container">
+            <Sticker src={sticker04} size={110} rotate={8} style={{ top: 0, right: 0 }} />
+            <div className="program-grid">
+              {items.map((item) => (
+                <ArtistCard
+                  key={item.id}
+                  item={item}
+                  mediaMap={mediaMap}
+                  visible={isVisible(item)}
+                  onClick={() => setActiveArtist(item)}
+                />
+              ))}
+            </div>
           </div>
         </>
       )}

@@ -4,8 +4,11 @@
 import React from "react";
 import { useGraphQLOptions, useCPT, useMediaBatch, useTaxonomyTerms } from "../hooks/useWordPress";
 import { useScrollSpy } from "../hooks/useScrollSpy";
-import { WPContent } from "../components/ui";
+import { WPContent, Sticker } from "../components/ui";
 import type { AncieneEditionEntry, PartenaireEntry } from "../types/wordpress";
+import sticker09 from "../assets/images/stickers/Franco2026_Sticker_09.png";
+import sticker01 from "../assets/images/stickers/Franco2026_Sticker_01.png";
+import sticker08 from "../assets/images/stickers/Franco2026_Sticker_08.png";
 
 type GQLImg       = { sourceUrl: string; altText?: string };
 type GQLEdge      = { node: GQLImg } | null;
@@ -28,6 +31,10 @@ function scrollToSection(id: string) {
     e.preventDefault();
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
+}
+
+function toId(val: unknown): number | null {
+  return typeof val === "number" && val > 0 ? val : null;
 }
 
 function cptImgUrl(val: unknown): string | null {
@@ -88,6 +95,10 @@ export function LeFestivalPage() {
               {item.label}
             </a>
           ))}
+          <div className="side-stickers">
+            <Sticker src={sticker09} size={90} rotate={-10} style={{ top: 0, left: 0 }} />
+            <Sticker src={sticker01} size={90} rotate={14} style={{ top: 10, right: 0 }} />
+          </div>
         </aside>
 
         <section className="content-column">
@@ -168,6 +179,7 @@ export function LeFestivalPage() {
                 ))}
               </div>
             )}
+            <Sticker src={sticker08} size={120} rotate={-8} style={{ bottom: 16, right: 16 }} />
           </div>
 
           {/* ── Presse ──────────────────────────────────────────────────── */}

@@ -1,7 +1,11 @@
+import { Sticker } from "../ui";
+import sticker08 from "../../assets/images/stickers/Franco2026_Sticker_08.png";
+
 export function Footer() {
   return (
     <footer className="footer footer-full">
       <div className="footer-inner">
+        <Sticker src={sticker08} size={110} rotate={-8} style={{ top: "50%", left: "50%", marginTop: -55, marginLeft: -55 }} />
         <nav className="footer-col">
           <a href="#" className="footer-link">Mentions légales</a>
           <a href="#" className="footer-link">Conditions générales</a>
