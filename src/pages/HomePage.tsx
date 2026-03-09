@@ -4,6 +4,7 @@ import { Sticker } from "../components/ui";
 import type { ActualiteEntry, PartenaireEntry, ProgrammationEntry } from "../types/wordpress";
 import logoCompact from "../assets/logo/francomanias-compact-2026.svg";
 import heroGif from "../assets/images/textures/motions/Francomanias_Animation_02.gif";
+import heroPoster from "../assets/images/textures/statics/Franco_Gradient_05.jpg";
 import sticker09 from "../assets/images/stickers/Franco2026_Sticker_09.png";
 
 // ─── Carte actualité ───────────────────────────────────────────────────────
@@ -107,7 +108,7 @@ export function HomePage() {
 
       {/* ── 1. Héro ──────────────────────────────────────────────────── */}
       <section className="festival-hero">
-        <img className="hero-video-bg" src={heroGif} alt="" aria-hidden="true" />
+        <img className="hero-video-bg" src={heroGif} alt="" aria-hidden="true" style={{ backgroundImage: `url(${heroPoster})`, backgroundSize: "cover", backgroundPosition: "center" }} />
         <div className="hero-overlay" />
         <div className="hero-content">
           <div

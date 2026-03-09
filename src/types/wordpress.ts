@@ -201,7 +201,43 @@ export type GQLInfosPratiques = {
   };
 };
 
+/** Options Page "Programmation" — graphql_type_name: Programmation */
+export type GQLProgrammation = {
+  /** group → graphql_field_name: programmationOptions */
+  programmationOptions?: {
+    grilleHoraireUrl?: string;
+  };
+};
+
+/** Options Page "Billetterie" — graphql_type_name: Billetterie */
+export type GQLBilletterie = {
+  /** group → graphql_field_name: billeterieOptions */
+  billeterieOptions?: {
+    url?: string;
+  };
+};
+
+/** Options Page "Mentions légales" — graphql_type_name: MentionsLegales */
+export type GQLMentionsLegales = {
+  /** group → graphql_field_name: mentionsLegalesContent */
+  mentionsLegalesContent?: {
+    contenu?: string;
+  };
+};
+
+/** Options Page "Conditions générales" — graphql_type_name: ConditionsGenerales */
+export type GQLConditionsGenerales = {
+  /** group → graphql_field_name: conditionsGeneralesContent */
+  conditionsGeneralesContent?: {
+    contenu?: string;
+  };
+};
+
 export type GQLAllOptions = {
   leFestival?:            GQLLeFestival;
   informationsPratiques?: GQLInfosPratiques;
+  programmation?:         GQLProgrammation;
+  billetterie?:           GQLBilletterie;
+  mentionsLegales?:       GQLMentionsLegales;
+  conditionsGenerales?:   GQLConditionsGenerales;
 };

@@ -1,6 +1,6 @@
 // ─── Thème actif ──────────────────────────────────────────────────────────────
 // Changer cette valeur et rebuilder pour changer l'identité visuelle du site.
-// Valeurs disponibles : "base" | "2024" | "2025" | "2026"
+// Valeurs disponibles : "base" | "2026"
 import type { ThemeName } from "../themes/index";
 export const ACTIVE_THEME: ThemeName = "2026";
 
@@ -17,10 +17,10 @@ export const SITE_CONFIG = {
 // cta: true → s'affiche à droite du nav en style pilule (Programmation, Billetterie)
 // cta: false → lien standard à gauche du nav
 export const NAV_ITEMS = [
-  { id: 1, title: "Le Festival",   url: "/festival",      cta: false },
-  { id: 2, title: "Infos pratiques", url: "/informations",  cta: false },
-  { id: 3, title: "Programmation", url: "/programmation", cta: true  },
-  { id: 4, title: "Billetterie",   url: "https://google.ch/", cta: true },
+  { id: 1, title: "Le Festival",      url: "/festival",           cta: false },
+  { id: 2, title: "Infos pratiques",  url: "/informations",       cta: false },
+  { id: 3, title: "Programmation",    url: "/programmation",      cta: true  },
+  { id: 4, title: "Billetterie",      url: "https://google.ch/",  cta: true },
 ] as const;
 
 export type NavItem = (typeof NAV_ITEMS)[number];

@@ -7,8 +7,8 @@ export function Footer() {
       <div className="footer-inner">
         <Sticker src={sticker08} size={110} rotate={-8} style={{ top: "50%", left: "50%", marginTop: -55, marginLeft: -55 }} />
         <nav className="footer-col">
-          <a href="#" className="footer-link">Mentions légales</a>
-          <a href="#" className="footer-link">Conditions générales</a>
+          <a href="/mentions-legales" className="footer-link">Mentions légales</a>
+          <a href="/conditions-generales" className="footer-link">Conditions générales</a>
           <a href="/festival#presse" className="footer-link">Accès presse</a>
           <a href="#" className="footer-link">Bénévoles</a>
           <a href="/festival#contact" className="footer-link">Contact</a>
@@ -37,7 +37,7 @@ export function Footer() {
       </div>
 
       <div className="footer-credits">
-        <span>© 2026 Francomanias — Tous droits réservés</span>
+        <span>© {new Date().getFullYear()} Francomanias — Tous droits réservés</span>
         <div><span style={{ display: "none" }}>Hébergement: <a href="https://infomaniak.com/" target="_blank" rel="noreferrer">Infomaniak</a> /</span> Développement: <a href="https://cobalt-it.ch/" target="_blank" rel="noreferrer">Cobalt</a> / Design: <a href="https://paradoxe.studio" target="_blank" rel="noreferrer">Paradoxe</a> x <a href="https://www.atelier-murmure.ch" target="_blank" rel="noreferrer">Murmure</a></div>
       </div>
     </footer>

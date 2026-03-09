@@ -1,5 +1,5 @@
-import React, { useMemo, useState } from "react";
-import { useCPT, useTaxonomyTerms, useMediaBatch } from "../hooks/useWordPress";
+import React, { useMemo, useRef, useState } from "react";
+import { useCPT, useTaxonomyTerms, useMediaBatch, useGraphQLSiteOptions } from "../hooks/useWordPress";
 import { acfReader } from "../components/acf";
 import { ErrorBanner, Skeleton, Sticker } from "../components/ui";
 import { ArtistACF } from "../config/acf-schemas";
@@ -18,7 +18,12 @@ function formatAcfDate(raw: string | null): string {
 
 type MediaMap = Map<number, { url: string; alt: string }>;
 
+const FALLBACK_GRILLE = "#grille-horaire";
+
 export function ProgrammationPage({ initialSlug }: { initialSlug?: string } = {}) {
+  const { data: gqlData } = useGraphQLSiteOptions();
+  const grilleUrl = gqlData?.programmation?.programmationOptions?.grilleHoraireUrl || FALLBACK_GRILLE;
+
   const { status, data, error } = useCPT<ProgrammationEntry>("artiste", {
     perPage: 100,
     orderby: "date",
@@ -29,6 +34,8 @@ export function ProgrammationPage({ initialSlug }: { initialSlug?: string } = {}
 
   const [selectedJour, setSelectedJour] = useState<number | null>(null);
   const [selectedLieu, setSelectedLieu] = useState<number | null>(null);
+  const toutLieuRef = useRef<HTMLButtonElement>(null);
+  const toutJourRef = useRef<HTMLButtonElement>(null);
   const [activeArtist, setActiveArtist] = useState<ProgrammationEntry | null>(null);
 
   // Ouvre automatiquement le modal si un slug initial est fourni (navigation depuis l'accueil)
@@ -55,21 +62,19 @@ export function ProgrammationPage({ initialSlug }: { initialSlug?: string } = {}
   const { data: mediaData } = useMediaBatch(photoIds);
   const mediaMap: MediaMap = mediaData ?? new Map();
 
-  // Calcul de visibilité : toutes les cartes restent dans le DOM,
-  // on les masque avec display:none pour éviter de recharger les images.
-  const isVisible = (item: ProgrammationEntry) => {
+  const visibleItems = items.filter((item) => {
     const matchJour = selectedJour ? (item.jour ?? []).includes(selectedJour) : true;
     const matchLieu = selectedLieu ? (item.lieu ?? []).includes(selectedLieu) : true;
     return matchJour && matchLieu;
-  };
-  const noneVisible = items.length > 0 && !items.some(isVisible);
+  });
+  const noneVisible = items.length > 0 && visibleItems.length === 0;
 
   return (
     <main className="page-content">
 
       <div className="program-header">
         <h1 className="program-title">Programmation</h1>
-        <a href="#grille-horaire" className="program-grille-link">+ Grille horaire</a>
+        <a href={grilleUrl} className="program-grille-link">+ Grille horaire</a>
       </div>
 
       {/* Filtres */}
@@ -79,44 +84,56 @@ export function ProgrammationPage({ initialSlug }: { initialSlug?: string } = {}
           {lieuStatus === "loading"
             ? Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-3 w-24" />)
             : <>
+                <button
+                  ref={toutLieuRef}
+                  className={`filter-chip${!selectedLieu ? " active" : ""}`}
+                  onClick={(e) => { setSelectedLieu(null); e.currentTarget.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" }); }}
+                >
+                  Tout
+                </button>
                 {(lieuTerms ?? []).map((term) => (
                   <button
                     key={term.id}
                     className={`filter-chip${selectedLieu === term.id ? " active" : ""}`}
-                    onClick={() => setSelectedLieu(selectedLieu === term.id ? null : term.id)}
+                    onClick={(e) => {
+                      const deselect = selectedLieu === term.id;
+                      setSelectedLieu(deselect ? null : term.id);
+                      if (deselect) toutLieuRef.current?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+                      else e.currentTarget.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+                    }}
                   >
                     {term.name}
                   </button>
                 ))}
-                <button
-                  className={`filter-chip${!selectedLieu ? " active" : ""}`}
-                  onClick={() => setSelectedLieu(null)}
-                >
-                  Tout
-                </button>
               </>
           }
         </div>
         {/* Jours */}
         <div className="filter-row">
+          <button
+            ref={toutJourRef}
+            className={`filter-chip${!selectedJour ? " active" : ""}`}
+            onClick={(e) => { setSelectedJour(null); e.currentTarget.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" }); }}
+          >
+            Tout
+          </button>
           {jourStatus === "loading"
             ? Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-3 w-20" />)
             : (jourTerms ?? []).map((term) => (
                 <button
                   key={term.id}
                   className={`filter-chip${selectedJour === term.id ? " active" : ""}`}
-                  onClick={() => setSelectedJour(selectedJour === term.id ? null : term.id)}
+                  onClick={(e) => {
+                    const deselect = selectedJour === term.id;
+                    setSelectedJour(deselect ? null : term.id);
+                    if (deselect) toutJourRef.current?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+                    else e.currentTarget.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+                  }}
                 >
                   {term.name}
                 </button>
               ))
           }
-          <button
-            className={`filter-chip${!selectedJour ? " active" : ""}`}
-            onClick={() => setSelectedJour(null)}
-          >
-            Tout
-          </button>
         </div>
       </div>
 
@@ -135,12 +152,11 @@ export function ProgrammationPage({ initialSlug }: { initialSlug?: string } = {}
           <div className="program-grid-container">
             <Sticker src={sticker04} size={110} rotate={8} style={{ top: 0, right: 0 }} />
             <div className="program-grid">
-              {items.map((item) => (
+              {visibleItems.map((item) => (
                 <ArtistCard
                   key={item.id}
                   item={item}
                   mediaMap={mediaMap}
-                  visible={isVisible(item)}
                   onClick={() => setActiveArtist(item)}
                 />
               ))}
@@ -169,12 +185,10 @@ export function ProgrammationPage({ initialSlug }: { initialSlug?: string } = {}
 function ArtistCard({
   item,
   mediaMap,
-  visible,
   onClick,
 }: {
   item:     ProgrammationEntry;
   mediaMap: MediaMap;
-  visible:  boolean;
   onClick:  () => void;
 }) {
   const acf     = acfReader(item.acf ?? {}, ArtistACF, mediaMap);
@@ -187,9 +201,7 @@ function ArtistCard({
     <article
       className="program-card"
       role="button"
-      tabIndex={visible ? 0 : -1}
-      aria-hidden={visible ? undefined : true}
-      style={visible ? undefined : { display: "none" }}
+      tabIndex={0}
       onClick={onClick}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick(); }

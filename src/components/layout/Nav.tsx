@@ -1,6 +1,7 @@
 import React from "react";
 import { NAV_ITEMS } from "../../config/site";
 import { useRoute } from "../../hooks/useRoute";
+import { useGraphQLSiteOptions } from "../../hooks/useWordPress";
 import logoHorizontal from "../../assets/logo/francomanias-horizontal-2026.svg";
 import logoCompact    from "../../assets/logo/francomanias-compact-2026.svg";
 
@@ -8,6 +9,9 @@ const leftItems  = NAV_ITEMS.filter((i) => !i.cta);
 const rightItems = NAV_ITEMS.filter((i) =>  i.cta);
 
 export function Nav() {
+  const { data: gqlData } = useGraphQLSiteOptions();
+  const billetterieUrl = gqlData?.billetterie?.billeterieOptions?.url || null;
+
   const [open, setOpen]       = React.useState(false);
   const [scrolled, setScrolled] = React.useState(false);
   const { route } = useRoute();
@@ -50,11 +54,12 @@ export function Nav() {
 
         <ul className="nav-links nav-links--right">
           {rightItems.map((item) => {
-            const isExternal = item.url.startsWith("http");
+            const url = (item.title === "Billetterie" && billetterieUrl) ? billetterieUrl : item.url;
+            const isExternal = url.startsWith("http");
             return (
               <li key={item.id}>
                 <a
-                  href={item.url}
+                  href={url}
                   className="nav-link nav-cta"
                   {...(isExternal ? { target: "_blank", rel: "noreferrer" } : {})}
                 ><span>{item.title}</span></a>
@@ -78,16 +83,19 @@ export function Nav() {
 
       {open && (
         <div className="mobile-menu">
-          {NAV_ITEMS.map((item) => (
-            <a
-              key={item.id}
-              href={item.url}
-              className="mobile-link"
-              onClick={() => setOpen(false)}
-            >
-              {item.title}
-            </a>
-          ))}
+          {NAV_ITEMS.map((item) => {
+            const url = (item.title === "Billetterie" && billetterieUrl) ? billetterieUrl : item.url;
+            return (
+              <a
+                key={item.id}
+                href={url}
+                className="mobile-link"
+                onClick={() => setOpen(false)}
+              >
+                {item.title}
+              </a>
+            );
+          })}
         </div>
       )}
     </header>

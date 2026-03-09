@@ -1,7 +1,7 @@
 // ─── Page Le Festival — version ACF/GraphQL ───────────────────────────────────
 // Charge le contenu depuis WPGraphQL (options page leFestival).
 // Partenaires via REST /wp/v2 (CPT). Sections vides si pas de contenu WP.
-import React from "react";
+import React, { useMemo } from "react";
 import { useGraphQLOptions, useCPT, useMediaBatch, useTaxonomyTerms } from "../hooks/useWordPress";
 import { useScrollSpy } from "../hooks/useScrollSpy";
 import { WPContent, Sticker } from "../components/ui";
@@ -66,14 +66,16 @@ export function LeFestivalPage() {
   const { data: partenaires }    = useCPT<PartenaireEntry>("partenaire", { perPage: 50 });
   const { data: partnerCats }    = useTaxonomyTerms("categorie");
 
-  // Résolution des IDs d'images (REST retourne des entiers pour les champs image/file)
-  const archivePhotoIds = (archives ?? [])
-    .map((e) => e.acf?.photo)
-    .filter((v): v is number => typeof v === "number" && v > 0);
-  const partnerLogoIds = (partenaires ?? [])
-    .map((p) => p.acf?.logo)
-    .filter((v): v is number => typeof v === "number" && v > 0);
-  const allMediaIds = [...new Set([...archivePhotoIds, ...partnerLogoIds])];
+  // Résolution des IDs d'images — memoïsé pour éviter de recalculer à chaque render
+  const allMediaIds = useMemo(() => {
+    const archiveIds = (archives ?? [])
+      .map((e) => e.acf?.photo)
+      .filter((v): v is number => typeof v === "number" && v > 0);
+    const partnerIds = (partenaires ?? [])
+      .map((p) => p.acf?.logo)
+      .filter((v): v is number => typeof v === "number" && v > 0);
+    return [...new Set([...archiveIds, ...partnerIds])];
+  }, [archives, partenaires]);
   const { data: mediaMap } = useMediaBatch(allMediaIds);
 
   return (

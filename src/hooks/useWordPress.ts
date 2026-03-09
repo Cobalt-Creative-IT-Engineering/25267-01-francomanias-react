@@ -268,6 +268,35 @@ export async function prefetchCPTItems(
   );
 }
 
+/**
+ * Préchauffe en parallèle toutes les données des pages Le Festival et
+ * Infos Pratiques : GraphQL options + CPT archives + CPT partenaires +
+ * taxonomie catégorie. À appeler en fire & forget au démarrage de l'app.
+ */
+export function prefetchFestivalData(): void {
+  const now = Date.now();
+  const STALE = 120_000;
+
+  const warm = <T>(key: string, fetcher: () => Promise<T>) => {
+    const cached = memoryCache.get(key);
+    if (cached && now - cached.updatedAt < STALE) return Promise.resolve();
+    return fetcher()
+      .then((data) => { memoryCache.set(key, { data, updatedAt: Date.now() }); })
+      .catch(() => {});
+  };
+
+  // Lance tout en parallèle — aucune dépendance entre ces requêtes
+  void Promise.all([
+    warm("gql-options",             () => graphqlFetch(GQL_ALL_OPTIONS)),
+    warm('cpt:ancienne-edition:{"perPage":30,"orderby":"title","order":"desc"}',
+         () => getCPT("ancienne-edition", { perPage: 30, orderby: "title", order: "desc" })),
+    warm('cpt:partenaire:{"perPage":50}',
+         () => getCPT("partenaire", { perPage: 50 })),
+    warm('taxonomy:categorie:{}',
+         () => getTaxonomyTerms("categorie", {})),
+  ]);
+}
+
 // ─── GraphQL ──────────────────────────────────────────────────────────────
 
 const GQL_ALL_OPTIONS = `
@@ -305,13 +334,50 @@ const GQL_ALL_OPTIONS = `
   }
 `;
 
+/** Query secondaire pour les options pages à créer (échoue silencieusement si non configurées). */
+const GQL_SITE_OPTIONS = `
+  query GetSiteOptions {
+    programmation {
+      programmationOptions {
+        grilleHoraireUrl
+      }
+    }
+    billetterie {
+      billeterieOptions {
+        url
+      }
+    }
+    mentionsLegales {
+      mentionsLegalesContent {
+        contenu
+      }
+    }
+    conditionsGenerales {
+      conditionsGeneralesContent {
+        contenu
+      }
+    }
+  }
+`;
+
 /**
- * Charge les deux options pages WP (Le Festival + Infos Pratiques) en une
- * seule requête GraphQL. Remplace useACFOptions() pour ces deux pages.
+ * Charge les options pages Le Festival + Infos Pratiques.
+ * Query stable — ne change pas quand on ajoute de nouvelles options pages WP.
  */
 export function useGraphQLOptions() {
   return useFetch<GQLAllOptions>(
     () => graphqlFetch<GQLAllOptions>(GQL_ALL_OPTIONS),
     { cacheKey: "gql-options", staleMs: 120_000, persist: true }
+  );
+}
+
+/**
+ * Charge les options pages secondaires (Programmation, Billetterie, Mentions légales,
+ * Conditions générales). Échoue silencieusement si les pages n'existent pas encore dans WP.
+ */
+export function useGraphQLSiteOptions() {
+  return useFetch<GQLAllOptions>(
+    () => graphqlFetch<GQLAllOptions>(GQL_SITE_OPTIONS).catch(() => ({} as GQLAllOptions)),
+    { cacheKey: "gql-site-options", staleMs: 120_000, persist: true }
   );
 }

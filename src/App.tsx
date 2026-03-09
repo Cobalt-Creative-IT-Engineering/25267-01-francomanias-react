@@ -10,11 +10,14 @@ import { LeFestivalPage }         from "./pages/LeFestivalPage";
 import { LeFestival2Page }        from "./pages/LeFestival2Page";
 import { AncieneEditionPage }     from "./pages/AncieneEditionPage";
 import { ActualiteDetailPage }    from "./pages/ActualiteDetailPage";
+import { MentionsLegalesPage }    from "./pages/MentionsLegalesPage";
+import { ConditionsGeneralesPage } from "./pages/ConditionsGeneralesPage";
 import { WPPageView }        from "./pages/WPPageView";
 import { ACTIVE_THEME }      from "./config/site";
 import { THEMES }            from "./themes/index";
 import { Decorations }       from "./themes/Decorations";
 import { initMeta, setPageMeta } from "./lib/meta";
+import { prefetchFestivalData } from "./hooks/useWordPress";
 
 // ─── Application du thème ─────────────────────────────────────────────────────
 const _theme = THEMES[ACTIVE_THEME];
@@ -82,6 +85,7 @@ export default function App() {
       .then((r) => r.json())
       .then((d) => { initMeta(d?.name ?? "", d?.description ?? ""); })
       .catch(() => {});
+    prefetchFestivalData();
   }, []);
 
   // Meta par défaut selon la route (les pages de détail écrasent avec leurs propres infos)
@@ -121,6 +125,8 @@ function PageView({ route, slug }: { route: string; slug: string | null }) {
   if (route === "/informations-2")          return <InfosPratiques2Page />;
   if (route.startsWith("/edition/"))        return <AncieneEditionPage slug={route.replace("/edition/", "")} />;
   if (route.startsWith("/actualite/"))      return <ActualiteDetailPage slug={route.replace("/actualite/", "")} />;
+  if (route === "/mentions-legales")        return <MentionsLegalesPage />;
+  if (route === "/conditions-generales")    return <ConditionsGeneralesPage />;
   if (route.startsWith("/page/") && slug)   return <WPPageView slug={slug} />;
   return <ErrorBanner message="Page non trouvée" />;
 }
