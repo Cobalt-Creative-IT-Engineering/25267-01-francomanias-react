@@ -1,7 +1,7 @@
 // ─── Page Infos Pratiques — version ACF/GraphQL ───────────────────────────────
 // Sections vides si pas de contenu dans WP. Voir InfosPratiques2Page pour la
 // version statique de référence.
-import { useGraphQLOptions } from "../hooks/useWordPress";
+import { useGraphQLOptions, useGraphQLLieuxOptions } from "../hooks/useWordPress";
 import { useScrollSpy } from "../hooks/useScrollSpy";
 import { WPContent, Sticker } from "../components/ui";
 import sticker09 from "../assets/images/stickers/Franco2026_Sticker_09.png";
@@ -27,8 +27,10 @@ function scrollToSection(id: string) {
 
 export function InfosPratiquesPage() {
   const { data } = useGraphQLOptions();
+  const { data: lieuxData } = useGraphQLLieuxOptions();
   const ip = data?.informationsPratiques?.infosPratiques;
   const activeId = useScrollSpy(NAV.map((i) => i.id));
+  const lieux = lieuxData?.informationsPratiques?.infosPratiques?.lieuContenu ?? [];
 
   const gqlMap: Record<string, string | undefined> = {
     transports:   ip?.transportsContenu,
@@ -63,11 +65,29 @@ export function InfosPratiquesPage() {
         <section className="content-column">
           {NAV.map((item) => {
             const html = gqlMap[item.id] || null;
-            if (!html) return null;
+            const hasLieux = item.id === "scenes" && lieux.length > 0;
+            if (!html && !hasLieux) return null;
             return (
               <div key={item.id} id={item.id} className="ip-section">
                 <h2>{item.label}</h2>
-                <WPContent html={html} className="prose-custom" />
+                {html && <WPContent html={html} className="prose-custom" />}
+                {hasLieux && (
+                  <div className="lieux-grid">
+                    {lieux.map((lieu, i) => (
+                      <div key={i} className="lieu-card">
+                        {lieu.photo?.node?.sourceUrl && (
+                          <img
+                            src={lieu.photo.node.sourceUrl}
+                            alt={lieu.photo.node.altText || lieu.nomDuLieu || ""}
+                            className="lieu-card-photo"
+                          />
+                        )}
+                        {lieu.nomDuLieu && <h3 className="lieu-card-name">{lieu.nomDuLieu}</h3>}
+                        {lieu.description && <WPContent html={lieu.description} className="prose-custom lieu-card-desc" />}
+                      </div>
+                    ))}
+                  </div>
+                )}
                 {item.id === "scenes"      && <Sticker src={sticker03} size={120} rotate={-7}  style={{ bottom: 16, right: 16 }} />}
                 {item.id === "hebergement" && <Sticker src={sticker07} size={120} rotate={10}  style={{ bottom: 16, right: 16 }} />}
               </div>

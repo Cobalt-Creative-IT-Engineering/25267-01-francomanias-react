@@ -85,12 +85,14 @@ export function Nav() {
         <div className="mobile-menu">
           {NAV_ITEMS.map((item) => {
             const url = (item.title === "Billetterie" && billetterieUrl) ? billetterieUrl : item.url;
+            const isExternal = url.startsWith("http");
             return (
               <a
                 key={item.id}
                 href={url}
                 className="mobile-link"
                 onClick={() => setOpen(false)}
+                {...(isExternal ? { target: "_blank", rel: "noreferrer" } : {})}
               >
                 {item.title}
               </a>

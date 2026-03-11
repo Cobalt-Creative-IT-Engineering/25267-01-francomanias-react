@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, useState } from "react";
-import { useCPT, useTaxonomyTerms, useMediaBatch, useGraphQLSiteOptions } from "../hooks/useWordPress";
+import { useCPT, useTaxonomyTerms, useMediaBatch, useGraphQLProgrammationOptions } from "../hooks/useWordPress";
 import { acfReader } from "../components/acf";
 import { ErrorBanner, Skeleton, Sticker } from "../components/ui";
 import { ArtistACF } from "../config/acf-schemas";
@@ -21,8 +21,8 @@ type MediaMap = Map<number, { url: string; alt: string }>;
 const FALLBACK_GRILLE = "#grille-horaire";
 
 export function ProgrammationPage({ initialSlug }: { initialSlug?: string } = {}) {
-  const { data: gqlData } = useGraphQLSiteOptions();
-  const grilleUrl = gqlData?.programmation?.programmationOptions?.grilleHoraireUrl || FALLBACK_GRILLE;
+  const { data: gqlData } = useGraphQLProgrammationOptions();
+  const grilleUrl = gqlData?.programmation?.programmationOptions?.grilleHoraireUrl?.node?.sourceUrl || FALLBACK_GRILLE;
 
   const { status, data, error } = useCPT<ProgrammationEntry>("artiste", {
     perPage: 100,
@@ -82,7 +82,7 @@ export function ProgrammationPage({ initialSlug }: { initialSlug?: string } = {}
 
       <div className="program-header">
         <h1 className="program-title">Programmation</h1>
-        <a href={grilleUrl} className="program-grille-link">+ Grille horaire</a>
+        <a href={grilleUrl} className="program-grille-link" target="_blank" rel="noreferrer">+ Grille horaire</a>
       </div>
 
       {/* Filtres */}
@@ -148,16 +148,9 @@ export function ProgrammationPage({ initialSlug }: { initialSlug?: string } = {}
       {/* Grille */}
       {status === "loading" && items.length === 0 ? (
         <div className="program-grid">
-          <div className="program-col">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="program-card program-card-photo--empty" style={{ opacity: 0.4 }} />
-            ))}
-          </div>
-          <div className="program-col program-col--right">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="program-card program-card-photo--empty" style={{ opacity: 0.4 }} />
-            ))}
-          </div>
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="program-card program-card-photo--empty" style={{ opacity: 0.4 }} />
+          ))}
         </div>
       ) : status === "error" ? (
         <ErrorBanner message={error ?? "Erreur de chargement"} />
@@ -168,23 +161,13 @@ export function ProgrammationPage({ initialSlug }: { initialSlug?: string } = {}
             <Sticker src={sticker04} size={110} rotate={8} style={{ top: -40, right: -10 }} />
             <div className="program-grid">
               <div className="program-col">
-                {visibleItems.filter((item) => items.indexOf(item) % 2 === 0).map((item) => (
-                  <ArtistCard
-                    key={item.id}
-                    item={item}
-                    mediaMap={mediaMap}
-                    onClick={() => setActiveArtist(item)}
-                  />
+                {visibleItems.filter((_, i) => i % 2 === 0).map((item) => (
+                  <ArtistCard key={item.id} item={item} mediaMap={mediaMap} onClick={() => setActiveArtist(item)} />
                 ))}
               </div>
               <div className="program-col program-col--right">
-                {visibleItems.filter((item) => items.indexOf(item) % 2 === 1).map((item) => (
-                  <ArtistCard
-                    key={item.id}
-                    item={item}
-                    mediaMap={mediaMap}
-                    onClick={() => setActiveArtist(item)}
-                  />
+                {visibleItems.filter((_, i) => i % 2 === 1).map((item) => (
+                  <ArtistCard key={item.id} item={item} mediaMap={mediaMap} onClick={() => setActiveArtist(item)} />
                 ))}
               </div>
             </div>

@@ -334,14 +334,30 @@ const GQL_ALL_OPTIONS = `
   }
 `;
 
-/** Query secondaire pour les options pages à créer (échoue silencieusement si non configurées). */
-const GQL_SITE_OPTIONS = `
-  query GetSiteOptions {
-    programmation {
-      programmationOptions {
-        grilleHoraireUrl
+/**
+ * Repeater lieu_contenu (Scènes & Lieux) — query séparée car le champ
+ * doit être configuré dans WPGraphQL avant d'être ajouté à la query stable.
+ */
+const GQL_LIEUX_OPTIONS = `
+  query GetLieuxOptions {
+    informationsPratiques {
+      infosPratiques {
+        lieuContenu {
+          nomDuLieu
+          description
+          photo { node { sourceUrl altText } }
+        }
       }
     }
+  }
+`;
+
+/**
+ * Billetterie + Mentions légales + Conditions générales.
+ * Tous des champs scalaires (String/URL/wysiwyg) — query très stable.
+ */
+const GQL_SITE_OPTIONS = `
+  query GetSiteOptions {
     billetterie {
       billeterieOptions {
         url
@@ -349,12 +365,30 @@ const GQL_SITE_OPTIONS = `
     }
     mentionsLegales {
       mentionsLegalesContent {
-        contenu
+        presentationContenu
       }
     }
     conditionsGenerales {
       conditionsGeneralesContent {
-        contenu
+        presentationContenu
+      }
+    }
+  }
+`;
+
+/**
+ * Programmation — séparée car le champ `file` WPGraphQL retourne une connexion
+ * MediaItem, pas un String scalaire.
+ */
+const GQL_PROG_OPTIONS = `
+  query GetProgOptions {
+    programmation {
+      programmationOptions {
+        grilleHoraireUrl {
+          node {
+            sourceUrl
+          }
+        }
       }
     }
   }
@@ -372,12 +406,44 @@ export function useGraphQLOptions() {
 }
 
 /**
- * Charge les options pages secondaires (Programmation, Billetterie, Mentions légales,
- * Conditions générales). Échoue silencieusement si les pages n'existent pas encore dans WP.
+ * Charge Billetterie, Mentions légales, Conditions générales.
+ * Échoue silencieusement si les pages n'existent pas encore dans WP.
  */
 export function useGraphQLSiteOptions() {
   return useFetch<GQLAllOptions>(
-    () => graphqlFetch<GQLAllOptions>(GQL_SITE_OPTIONS).catch(() => ({} as GQLAllOptions)),
+    () => graphqlFetch<GQLAllOptions>(GQL_SITE_OPTIONS).catch((e) => {
+      console.warn("[GQL_SITE_OPTIONS] query failed:", e);
+      return {} as GQLAllOptions;
+    }),
     { cacheKey: "gql-site-options", staleMs: 120_000, persist: true }
+  );
+}
+
+/**
+ * Charge l'URL de la grille horaire (champ `file` WPGraphQL = connexion MediaItem).
+ * Échoue silencieusement si la page n'existe pas encore dans WP.
+ */
+export function useGraphQLProgrammationOptions() {
+  return useFetch<GQLAllOptions>(
+    () => graphqlFetch<GQLAllOptions>(GQL_PROG_OPTIONS).catch((e) => {
+      console.warn("[GQL_PROG_OPTIONS] query failed:", e);
+      return {} as GQLAllOptions;
+    }),
+    { cacheKey: "gql-prog-options", staleMs: 120_000, persist: true }
+  );
+}
+
+/**
+ * Charge le repeater lieu_contenu (Scènes & Lieux).
+ * Séparé de GQL_ALL_OPTIONS pour ne pas casser Le Festival/InfosPratiques
+ * si le champ n'est pas encore configuré dans WPGraphQL.
+ */
+export function useGraphQLLieuxOptions() {
+  return useFetch<GQLAllOptions>(
+    () => graphqlFetch<GQLAllOptions>(GQL_LIEUX_OPTIONS).catch((e) => {
+      console.warn("[GQL_LIEUX_OPTIONS] query failed:", e);
+      return {} as GQLAllOptions;
+    }),
+    { cacheKey: "gql-lieux-options", staleMs: 120_000, persist: true }
   );
 }

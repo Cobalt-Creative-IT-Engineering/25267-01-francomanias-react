@@ -12,6 +12,7 @@ import { AncieneEditionPage }     from "./pages/AncieneEditionPage";
 import { ActualiteDetailPage }    from "./pages/ActualiteDetailPage";
 import { MentionsLegalesPage }    from "./pages/MentionsLegalesPage";
 import { ConditionsGeneralesPage } from "./pages/ConditionsGeneralesPage";
+import { BilletteriePage }    from "./pages/BilletteriePage";
 import { WPPageView }        from "./pages/WPPageView";
 import { ACTIVE_THEME }      from "./config/site";
 import { THEMES }            from "./themes/index";
@@ -125,6 +126,7 @@ function PageView({ route, slug }: { route: string; slug: string | null }) {
   if (route === "/informations-2")          return <InfosPratiques2Page />;
   if (route.startsWith("/edition/"))        return <AncieneEditionPage slug={route.replace("/edition/", "")} />;
   if (route.startsWith("/actualite/"))      return <ActualiteDetailPage slug={route.replace("/actualite/", "")} />;
+  if (route === "/billetterie")             return <BilletteriePage />;
   if (route === "/mentions-legales")        return <MentionsLegalesPage />;
   if (route === "/conditions-generales")    return <ConditionsGeneralesPage />;
   if (route.startsWith("/page/") && slug)   return <WPPageView slug={slug} />;

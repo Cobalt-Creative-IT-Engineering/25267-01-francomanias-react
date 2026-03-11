@@ -627,7 +627,7 @@ a {
     }
   }
 
-  /* ── Grille artistes — deux colonnes flex pour un vrai décalage de colonne */
+  /* ── Grille artistes — deux colonnes flex ──────────────────────────────── */
 
   .program-grid {
     display: flex;
@@ -642,7 +642,7 @@ a {
     gap: 4px;
   }
 
-  /* La colonne droite est décalée vers le bas une seule fois */
+  /* Colonne droite décalée vers le bas */
   .program-col--right {
     padding-top: 40px;
   }
@@ -657,8 +657,7 @@ a {
   }
 
   @media screen and (max-width: 960px) {
-    .program-grid {        
-      display: flex;
+    .program-grid {
       flex-direction: column;
     }
 
@@ -672,24 +671,20 @@ a {
 
     .program-card {
       height: 320px;
-      margin: 0 !important;
     }
   }
 
-  /* ── Marges décalées desktop (pseudo-aléatoires par colonne) ──────────── */
   @media screen and (min-width: 961px) {
-    /* Colonne gauche (~N/2 cartes) : moduli 4 et 5 copremiers
-       Positions avec marge : 2 3 6 8 10 13… */
-    .program-col:first-child .program-card:nth-child(4n+2),   /* 2 6 10 14… */
-    .program-col:first-child .program-card:nth-child(5n+3) {  /* 3 8 13…    */
-      margin-left: 30px;
+    /* Colonne gauche */
+    .program-col:not(.program-col--right) .program-card:nth-child(5n+2),
+    .program-col:not(.program-col--right) .program-card:nth-child(7n+4) { 
+      margin-left: 40px; 
     }
 
-    /* Colonne droite (~N/2 cartes) : moduli 3 et 5 copremiers
-       Positions avec marge : 1 4 6 7 9 11 14… */
-    .program-col--right .program-card:nth-child(3n+1),   /* 1 4 7 10 13… */
-    .program-col--right .program-card:nth-child(5n+4) {  /* 4 9 14…      */
-      margin-right: 40px;
+    /* Colonne droite */
+    .program-col--right .program-card:nth-child(5n+1),
+    .program-col--right .program-card:nth-child(7n+3) { 
+      margin-right: 30px; 
     }
   }
 
@@ -1233,6 +1228,65 @@ a {
 
   .ticket-frame {
     @apply w-full min-h-[70vh] border-0;
+  }
+
+  .ticket-cta-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 2rem 0 1rem;
+  }
+
+  .ticket-cta-btn {
+    display: inline-block;
+    background: var(--accent);
+    color: #fff;
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 700;
+    padding: 1rem 2.5rem;
+    border-radius: var(--radius, 4px);
+    text-decoration: none;
+    transition: background 0.15s;
+  }
+
+  .ticket-cta-btn:hover {
+    background: var(--accent-hover, var(--accent));
+  }
+
+  /* Scènes & Lieux — repeater */
+  .lieux-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .lieu-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .lieu-card-photo {
+    width: 100%;
+    aspect-ratio: 5/3;
+    object-fit: cover;
+    border-radius: var(--radius, 4px);
+  }
+
+  .lieu-card-name {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin: 0;
+    margin-top: 10px !important;
+    margin-bottom: 0px !important;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .lieu-card-desc {
+    font-size: 0.875rem;
   }
 
   .ticket-info {

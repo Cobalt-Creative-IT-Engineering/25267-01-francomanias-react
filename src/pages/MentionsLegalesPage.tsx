@@ -3,7 +3,7 @@ import { WPContent, Skeleton } from "../components/ui";
 
 export function MentionsLegalesPage() {
   const { data, status } = useGraphQLSiteOptions();
-  const contenu = data?.mentionsLegales?.mentionsLegalesContent?.contenu;
+  const contenu = data?.mentionsLegales?.mentionsLegalesContent?.presentationContenu;
 
   return (
     <main className="page-content">

@@ -1,14 +1,9 @@
-import { useACFOptions } from "../hooks/useWordPress";
-import { acfReader } from "../components/acf";
-import { ErrorBanner } from "../components/ui";
-import { BilletterieACF } from "../config/acf-schemas";
+import { useGraphQLSiteOptions } from "../hooks/useWordPress";
 
 export function BilletteriePage() {
-  const { data: options } = useACFOptions();
-  const billetterie = acfReader(options as Record<string, unknown> | null, BilletterieACF);
-
+  const { data } = useGraphQLSiteOptions();
   const ticketUrl =
-    billetterie.first("url", "urlAlt") ||
+    data?.billetterie?.billeterieOptions?.url ||
     (import.meta.env.VITE_TICKETING_URL as string | undefined) ||
     "";
 
@@ -33,18 +28,17 @@ export function BilletteriePage() {
         </div>
       </section>
 
-      {ticketUrl ? (
-        <div className="ticket-wrapper">
-          <iframe
-            className="ticket-frame"
-            src={ticketUrl}
-            title="Billetterie"
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-          />
+      {ticketUrl && (
+        <div className="ticket-cta-wrapper">
+          <a
+            href={ticketUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="ticket-cta-btn"
+          >
+            Réserver mes places →
+          </a>
         </div>
-      ) : (
-        <ErrorBanner message="Ajoute une URL de billetterie dans ACF Options (billetterie_url)." />
       )}
     </main>
   );

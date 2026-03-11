@@ -3,7 +3,7 @@ import { WPContent, Skeleton } from "../components/ui";
 
 export function ConditionsGeneralesPage() {
   const { data, status } = useGraphQLSiteOptions();
-  const contenu = data?.conditionsGenerales?.conditionsGeneralesContent?.contenu;
+  const contenu = data?.conditionsGenerales?.conditionsGeneralesContent?.presentationContenu;
 
   return (
     <main className="page-content">

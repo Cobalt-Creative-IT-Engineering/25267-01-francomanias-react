@@ -195,6 +195,12 @@ export type GQLInfosPratiques = {
     transportsContenu?:   string;
     horairesContenu?:     string;
     scenesContenu?:       string;
+    /** Repeater ACF lieu_contenu → liste des scènes/lieux avec photo */
+    lieuContenu?: Array<{
+      nomDuLieu?:   string;
+      description?: string;
+      photo?: { node: { sourceUrl: string; altText?: string } } | null;
+    }>;
     restaurationContenu?: string;
     securiteContenu?:     string;
     hebergementContenu?:  string;
@@ -205,7 +211,8 @@ export type GQLInfosPratiques = {
 export type GQLProgrammation = {
   /** group → graphql_field_name: programmationOptions */
   programmationOptions?: {
-    grilleHoraireUrl?: string;
+    /** Champ `file` ACF → WPGraphQL retourne une connexion MediaItem */
+    grilleHoraireUrl?: { node: { sourceUrl: string } } | null;
   };
 };
 
@@ -221,7 +228,7 @@ export type GQLBilletterie = {
 export type GQLMentionsLegales = {
   /** group → graphql_field_name: mentionsLegalesContent */
   mentionsLegalesContent?: {
-    contenu?: string;
+    presentationContenu?: string;
   };
 };
 
@@ -229,7 +236,7 @@ export type GQLMentionsLegales = {
 export type GQLConditionsGenerales = {
   /** group → graphql_field_name: conditionsGeneralesContent */
   conditionsGeneralesContent?: {
-    contenu?: string;
+    presentationContenu?: string;
   };
 };
 
