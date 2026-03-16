@@ -238,7 +238,7 @@ export function LeFestivalPage() {
               };
 
               if (cats) {
-                return cats.map((cat) => {
+                return [...cats].sort((a, b) => a.slug.localeCompare(b.slug)).map((cat) => {
                   const catPartners = partenaires.filter((p) =>
                     (p.categorie ?? []).includes(cat.id)
                   );
