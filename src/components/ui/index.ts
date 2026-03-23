@@ -4,3 +4,4 @@ export { PostCard }                  from "./PostCard";
 export { Pagination }                from "./Pagination";
 export { WPContent }                 from "./WPContent";
 export { Sticker }                   from "./Sticker";
+export { HeroCanvas }               from "./HeroCanvas";
