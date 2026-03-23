@@ -43,8 +43,8 @@ function hexToRgb(hex: string): [number, number, number] {
 
 type GrainParticle = { r: number; g: number; b: number; phase: number; speed: number; base: number; amp: number };
 
-// Grain en pixels larges → moins de cellules à calculer
-const PIXEL        = 3;
+// Grain adaptatif : plus fin sur mobile, plus grossier sur desktop
+function getPixelSize(width: number) { return width < 768 ? 2 : 3; }
 const DENSITY      = 0.85;
 const INTENSITY    = 0.85;
 const GRAIN_SPEED  = 0.04;
@@ -66,13 +66,14 @@ export function HeroCanvas() {
     if (!ctx) return;
 
     let fi = 0, t = 0, lastSwitch = 0, lastGrain = 0, rafId = 0;
-    let cols = 0, rows = 0;
+    let cols = 0, rows = 0, pixel = 3;
     let grainData: GrainParticle[] = [];
     let imgData: ImageData | null = null;
 
     function rebuildGrain() {
-      cols = Math.ceil(canvas!.width  / PIXEL);
-      rows = Math.ceil(canvas!.height / PIXEL);
+      pixel = getPixelSize(canvas!.width);
+      cols = Math.ceil(canvas!.width  / pixel);
+      rows = Math.ceil(canvas!.height / pixel);
       const userRgbs = [COLORS.TL, COLORS.TR, COLORS.C, COLORS.BL, COLORS.BR, COLORS.base].map(hexToRgb);
       const palette  = [...BASE_PALETTE, ...userRgbs];
       grainData = Array.from({ length: cols * rows }, () => {
@@ -125,11 +126,11 @@ export function HeroCanvas() {
           ));
           if (a < 0.05) continue;
           const alpha = Math.round(a * 255);
-          const px = (i % cols) * PIXEL;
-          const py = Math.floor(i / cols) * PIXEL;
-          for (let dy = 0; dy < PIXEL; dy++) {
+          const px = (i % cols) * pixel;
+          const py = Math.floor(i / cols) * pixel;
+          for (let dy = 0; dy < pixel; dy++) {
             const row = (py + dy) * canvas!.width;
-            for (let dx = 0; dx < PIXEL; dx++) {
+            for (let dx = 0; dx < pixel; dx++) {
               const idx = (row + px + dx) * 4;
               data[idx]     = g.r;
               data[idx + 1] = g.g;
