@@ -103,9 +103,12 @@ export function HeroCanvas() {
     }
 
     function rebuild() {
-      canvas!.width  = wrap!.offsetWidth;
-      canvas!.height = wrap!.offsetHeight;
-      if (ctx) bakedFrames = prebakeGrainFrames(canvas!.width, canvas!.height, pixel);
+      const w = wrap!.offsetWidth;
+      const h = wrap!.offsetHeight;
+      if (!w || !h) return;
+      canvas!.width  = w;
+      canvas!.height = h;
+      if (ctx) bakedFrames = prebakeGrainFrames(w, h, pixel);
     }
 
     rebuild();
@@ -136,7 +139,7 @@ export function HeroCanvas() {
   }, []);
 
   return (
-    <div ref={wrapRef} style={{ position: "absolute", inset: 0 }}>
+    <div ref={wrapRef} className="hero-canvas-wrap" style={{ position: "absolute", inset: 0 }}>
       <div ref={bgRef} />
       <canvas ref={canvasRef} style={{ position: "absolute", inset: 0, mixBlendMode: "overlay" }} />
     </div>

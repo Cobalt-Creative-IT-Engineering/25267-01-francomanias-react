@@ -113,38 +113,204 @@
   }
 }
 
-/* ─── Thème : base (neutre, noir et blanc) ─────────────────────────────────── */
+/* ─── Thème : base (neutre noir/blanc — même structure que 2026) ────────────── */
 html.theme-base {
+  /* Palette */
   --color-1:        #000000;
-  --color-2:        #AAAAAA;
-  --color-3:        #DDDDDD;
-  --color-4:        #1a1a1a;
-  --color-5:        #3c3c3c;
-  --bg:             #f5f5f5;
-  --surface:        #3c3c3c;
+  --color-2:        #f0f0f0;
+  --color-3:        #cccccc;
+  --color-4:        #444444;
+  --color-5:        #222222;
+  --bg:             #ffffff;
+  --surface:        #ffffff;
   --surface-2:      #f0f0f0;
-  --surface-3:      #e8e8e8;
-  --border:         #d0d0d0;
+  --surface-3:      #e4e4e4;
+  --border:         #111111;
   --text-primary:   #111111;
-  --text-secondary: #333333;
-  --text-muted:     #777777;
+  --text-secondary: #111111;
+  --text-muted:     rgba(0, 0, 0, 0.5);
   --accent:         #111111;
   --accent-hover:   #333333;
-  --accent-soft:    #eeeeee;
-  --radius:           4px;
-  --radius-lg:        6px;
-  --body-grad-1:      transparent;
-  --body-grad-2:      transparent;
-  --blob-1:         rgba(0, 0, 0, 0.03);
-  --blob-2:         rgba(0, 0, 0, 0.02);
-  --blob-3:         rgba(0, 0, 0, 0.02);
-  --blob-4:         rgba(0, 0, 0, 0.01);
-  --deco-texture-opacity: 0.06;
-  --deco-dot-light: rgba(255, 255, 255, 0.4);
-  --deco-dot-dark:  rgba(0, 0, 0, 0.04);
+  --accent-soft:    #f0f0f0;
+
+  /* Typographie — mêmes polices système */
+  --font-display: system-ui, sans-serif;
+  --font-heading: system-ui, sans-serif;
+  --font-body:    system-ui, sans-serif;
+
+  /* Géométrie carrée (comme 2026) */
+  --radius:    0px;
+  --radius-lg: 2px;
+
+  /* Interlettrage neutre */
+  --ls-display: 0;
+  --ls-heading: -0.03em;
+  --ls-label:   0em;
+
+  /* Fond body plat */
+  --body-grad-1: transparent;
+  --body-grad-2: transparent;
+  --blob-1: transparent;
+  --blob-2: transparent;
+  --blob-3: transparent;
+  --blob-4: transparent;
+  --deco-texture-opacity: 0;
+
+  /* Héro noir */
+  --hero-bg:         #000000;
+  --hero-bg-light:   #111111;
+  --hero-text:       #ffffff;
+  --hero-logo-color: #ffffff;
+  --hero-date-color: rgba(255, 255, 255, 0.7);
+  --hero-grain:      0;
+
+  /* Sections alternées */
+  --section-alt-bg:   #111111;
+  --section-alt-text: #ffffff;
+
+  /* Nav */
+  --nav-bg:          rgba(255, 255, 255, 0.95);
+  --nav-cta-bg:      #111111;
+  --nav-cta-text:    #ffffff;
+  --nav-logo-color:  #111111;
 }
 
-/* ─── Thème : 2026 (Francomanias — rose/jaune, carré, Space Grotesk) ───────── */
+/* Stickers masqués en thème base */
+html.theme-base .sticker-wrap { display: none !important; }
+
+/* Hero canvas masqué en thème base → fond noir explicite */
+html.theme-base .hero-canvas-wrap { display: none !important; }
+html.theme-base .festival-home .festival-hero { background: #000000 !important; }
+
+/* Nav transparent (héro noir) : liens blancs */
+html.theme-base .nav-transparent .nav-link { color: #ffffff; }
+html.theme-base .nav-transparent .ham-line { background: #ffffff; }
+html.theme-base .nav-transparent .nav-cta {
+  background: #ffffff !important;
+  color: #000000 !important;
+}
+
+/* Overlay héro : supprimer le gradient bleu par défaut */
+html.theme-base .festival-home .festival-hero .hero-overlay { background: none; }
+
+/* Logo héro : blanc sur fond noir */
+html.theme-base .hero-logo-compact { background-color: #ffffff; }
+
+/* ─── Overrides structure thème base (même layout que 2026, couleurs B&W) ── */
+
+/* Corps */
+html.theme-base body                  { font-weight: 400; line-height: 1.4; }
+html.theme-base p,
+html.theme-base li,
+html.theme-base td                    { font-weight: 400; line-height: 1.4; }
+
+/* Titres */
+html.theme-base h1                    { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 700; text-transform: uppercase; }
+html.theme-base h2,
+html.theme-base h3                    { font-weight: 700; text-transform: uppercase; letter-spacing: var(--ls-heading); }
+
+/* Nav */
+html.theme-base .nav-link             { color: var(--text-primary); }
+html.theme-base .nav-link:hover       { color: #444444; }
+
+/* Home sections */
+html.theme-base .home-section-title   { font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 900; text-transform: uppercase; letter-spacing: normal; }
+
+/* Titres de page — même format que les h2 de section (Transports & Accès) */
+html.theme-base .page-title           { font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 900; letter-spacing: normal; line-height: 1.15; }
+html.theme-base .ticket-title         { font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 900; letter-spacing: normal; }
+html.theme-base .section-title        { font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 900; letter-spacing: normal; }
+html.theme-base .program-title        { font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 900; letter-spacing: normal; text-transform: uppercase; color: var(--accent); }
+
+/* Uppercase sur éléments display */
+html.theme-base .lineup-link,
+html.theme-base .hero-name-display,
+html.theme-base .page-title,
+html.theme-base .partners-label,
+html.theme-base .ticket-title,
+html.theme-base .section-title,
+html.theme-base .post-title,
+html.theme-base .acf-section-title    { text-transform: uppercase; }
+
+/* Partners */
+html.theme-base .partners-label       { font-size: clamp(0.9rem, 1.5vw, 1.1rem); font-weight: 700; letter-spacing: 0.06em; color: var(--text-primary); }
+html.theme-base .partner-logo-name    { font-size: clamp(0.875rem, 1.5vw, 1.1rem) !important; font-family: system-ui, sans-serif; }
+html.theme-base .ip-partners-cat-title {
+  font-weight: 700; text-transform: uppercase; opacity: 1;
+  border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 1rem;
+}
+
+/* Content column h2 */
+html.theme-base .content-column h2 {
+  font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 900; text-transform: uppercase; letter-spacing: normal;
+  border-bottom: 2px solid var(--accent); padding-bottom: 0.5rem; margin: 2.5rem 0 1.25rem;
+}
+html.theme-base .content-column h2:first-child { margin-top: 0; }
+
+/* IP section h2 */
+html.theme-base .ip-section h2,
+html.theme-base .content-column .ip-section h2 {
+  font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 900; text-transform: uppercase; letter-spacing: normal;
+  border-bottom: 2px solid var(--accent); margin: 2.5rem 0 1.25rem; padding-bottom: 0.5rem;
+}
+
+/* Sidebar */
+html.theme-base .side-link            { color: var(--text-primary); }
+html.theme-base .side-link:hover,
+html.theme-base .side-link--active    { color: var(--accent); }
+
+/* Filtres — carrés et padding symétrique */
+html.theme-base .filter-chip          { border-radius: 0; padding: 0.4rem 0.75rem; }
+html.theme-base .filter-chip.active   { background: var(--accent); color: #ffffff; }
+html.theme-base .program-card-name    { color: #ffffff; }
+html.theme-base .program-card-date    { color: #ffffff; }
+
+/* Actualités — titre de carte raisonnable */
+html.theme-base .news-card-title      { font-size: clamp(0.9rem, 1.8vw, 1.1rem) !important; font-weight: 700; letter-spacing: 0; line-height: 1.3; }
+
+/* Line-up — tout en blanc sur fond sombre */
+html.theme-base .lineup-link          { color: #ffffff; font-size: clamp(1.6rem, 4vw, 3rem); }
+html.theme-base .lineup-names         { color: #ffffff; }
+html.theme-base .lineup-sep           { color: rgba(255,255,255,0.45); }
+html.theme-base .lineup-name:hover    { color: rgba(255,255,255,0.65) !important; }
+
+/* Boutons — carrés et padding symétrique en thème base */
+html.theme-base .btn-primary          { border-radius: 0; padding: 0.625rem 1.5rem; height: auto; }
+html.theme-base .btn-ghost            { border-radius: 0; }
+html.theme-base .nav-cta              { border-radius: 0; padding: 0.5rem 1rem; height: auto; }
+/* Bouton sur fond sombre (footer, modal) → inversé */
+html.theme-base .footer-full .btn-primary  { background: #ffffff !important; color: #111111 !important; }
+
+/* Modal artiste — texte blanc sur fond sombre */
+html.theme-base .artist-modal         { background: #111111; border: none; border-radius: 0; color: #ffffff; }
+html.theme-base .artist-modal-body    { background: #111111; color: #ffffff; padding: 1.75rem 2rem; }
+html.theme-base .artist-modal-name    { color: #ffffff; }
+html.theme-base .artist-modal-when span { color: rgba(255,255,255,0.75); }
+html.theme-base .artist-modal-style   { color: rgba(255,255,255,0.55); }
+html.theme-base .artist-modal-bio     { color: rgba(255,255,255,0.85); }
+html.theme-base .artist-modal-bio--empty { color: rgba(255,255,255,0.45); }
+html.theme-base .artist-modal-link    { color: #ffffff; }
+html.theme-base .artist-modal-horaire { color: rgba(255,255,255,0.55); }
+html.theme-base .artist-modal-close   { background: rgba(255,255,255,0.12); color: #ffffff; }
+html.theme-base .artist-modal-close:hover { background: rgba(255,255,255,0.22); }
+/* Bouton billetterie — inversé sur fond sombre */
+html.theme-base .artist-modal-cta     { background: #ffffff !important; color: #111111 !important; border-radius: 0; height: auto; padding: 0.5rem 1.25rem; }
+html.theme-base .artist-modal-cta:hover { background: #e0e0e0 !important; }
+
+/* Footer */
+html.theme-base .footer-full          { background: #111111; color: #ffffff; }
+html.theme-base .footer-full .footer-link,
+html.theme-base .footer-newsletter-label,
+html.theme-base .footer-credits       { color: #ffffff; }
+html.theme-base .footer-full .footer-link:hover { opacity: 0.7; }
+html.theme-base .footer-social-link   { background: #ffffff; color: #111111; }
+html.theme-base .footer-credits       { border-top-color: rgba(255,255,255,0.2); opacity: 1; }
+
+/* Callout / blockquote — fond gris clair */
+html.theme-base .ip-callout,
+html.theme-base .prose-custom blockquote { background: #f0f0f0 !important; border-left-color: var(--accent); color: var(--text-primary) !important; }
+
+/* ─── Thème : 2026(Francomanias — rose/jaune, carré, Space Grotesk) ───────── */
 html.theme-2026 {
   /* Palette globale */
   --color-1:        #e573b8;  /* rose */
@@ -1826,25 +1992,24 @@ a {
 
   .news-card-img--empty { background: #e8e8e8; }
 
-  /* Date : style titre (font display, grande) */
-  .news-date {
-    font-family: var(--font-display);
-    font-size: clamp(1rem, 11vw, 3.5rem);
-    text-transform: uppercase;
+  /* Titre : style titre (font display, grande) */ 
+  .news-card-title {
+    font-family: var(--font-display) !important;
+    font-size: clamp(1rem, 11vw, 3.5rem) !important;
     font-weight: 400;
     letter-spacing: var(--ls-display);
-    margin: 0.5rem 0 0;
+    margin: 0 0 !important;
     line-height: 1.1;
   }
 
-  /* Titre : small, majuscules */
-  .news-card-title {
+  /* Date : small, majuscules */
+  .news-date{
     font-size: 1rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: var(--ls-label);
-    margin: 0;
-    line-height: 1.4;
+    margin: 1rem 0 -0.4rem 0;
+    line-height: 1;
   }
 
   /* Extrait : small */
@@ -1872,7 +2037,7 @@ a {
   html.theme-2026 .hero-name-display,
   html.theme-2026 .page-title,
   html.theme-2026 .content-column h2,
-  html.theme-2026 .news-date,
+  html.theme-2026 .news-card-title,
   html.theme-2026 .partners-label,
   html.theme-2026 .partner-logo-name,
   html.theme-2026 .hero-title,
