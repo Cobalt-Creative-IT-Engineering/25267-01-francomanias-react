@@ -18,11 +18,11 @@ import { Decorations }       from "./themes/Decorations";
 import { initMeta, setPageMeta } from "./lib/meta";
 import { prefetchFestivalData, useGraphQLPageAttente } from "./hooks/useWordPress";
 import { PageAttentePage } from "./pages/PageAttentePage";
-import { StagingGate }     from "./pages/StagingGate";
+import { StagingGate, hashPassword } from "./pages/StagingGate";
 import { FORCE_WAITING_PAGE } from "./config/site";
 
-const STAGING_HASH = import.meta.env.VITE_STAGING_HASH as string | undefined;
-const isStaging    = window.location.hostname.endsWith(".netlify.app");
+const STAGING_PASSWORD = import.meta.env.VITE_STAGING_PASSWORD as string | undefined;
+const isStaging        = window.location.hostname.endsWith(".netlify.app");
 
 // ─── Application du thème ─────────────────────────────────────────────────────
 const _theme = THEMES[ACTIVE_THEME];
@@ -86,9 +86,17 @@ export default function App() {
   const { route, slug, anchor } = useRoute();
   const { data: waitData, status: waitStatus, refetch: refetchWait } = useGraphQLPageAttente();
 
-  const [stagingAuth, setStagingAuth] = useState(
-    () => STAGING_HASH != null && sessionStorage.getItem("staging-auth") === STAGING_HASH
-  );
+  const [stagingAuth, setStagingAuth] = useState(false);
+
+  // Vérifie si le hash stocké correspond au hash du mot de passe actuel
+  useEffect(() => {
+    if (!isStaging || !STAGING_PASSWORD) return;
+    const stored = sessionStorage.getItem("staging-auth");
+    if (!stored) return;
+    hashPassword(STAGING_PASSWORD).then((expected) => {
+      if (stored === expected) setStagingAuth(true);
+    });
+  }, []);
 
   // Calcul anticipé de displayDate (nécessaire pour l'effet ci-dessous)
   const waitFields     = waitData?.pageDattente?.pageAttente ?? null;
@@ -137,7 +145,7 @@ export default function App() {
     return () => clearTimeout(t);
   }, [displayDate, refetchWait]);
   // Staging : demande un mot de passe sur *.netlify.app
-  if (isStaging && STAGING_HASH && !stagingAuth) {
+  if (isStaging && !stagingAuth) {
     return <StagingGate onSuccess={(hash) => { sessionStorage.setItem("staging-auth", hash); setStagingAuth(true); }} />;
   }
 

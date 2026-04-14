@@ -20,9 +20,12 @@ export function StagingGate({ onSuccess }: { onSuccess: (hash: string) => void }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const expectedHash = import.meta.env.VITE_STAGING_HASH as string | undefined;
-    if (!expectedHash) return;
-    const enteredHash = await hashPassword(value);
+    const password = import.meta.env.VITE_STAGING_PASSWORD as string | undefined;
+    if (!password) { setError(true); return; }
+    const [enteredHash, expectedHash] = await Promise.all([
+      hashPassword(value),
+      hashPassword(password),
+    ]);
     if (enteredHash === expectedHash) {
       onSuccess(enteredHash);
     } else {
