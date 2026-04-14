@@ -143,9 +143,13 @@ export default function App() {
     return <StagingGate onSuccess={() => { sessionStorage.setItem("staging-auth", "ok"); setStagingAuth(true); }} />;
   }
 
-  if (!FORCE_WAITING_PAGE && waitStatus === "loading") return null;
-  if (FORCE_WAITING_PAGE || (displayDate !== null && new Date() < displayDate)) {
-    return <PageAttentePage fields={waitFields} />;
+  // Sur staging authentifié → on bypass la page d'attente
+  const bypassWaiting = isStaging && stagingAuth;
+  if (!bypassWaiting) {
+    if (!FORCE_WAITING_PAGE && waitStatus === "loading") return null;
+    if (FORCE_WAITING_PAGE || (displayDate !== null && new Date() < displayDate)) {
+      return <PageAttentePage fields={waitFields} />;
+    }
   }
 
   return (
