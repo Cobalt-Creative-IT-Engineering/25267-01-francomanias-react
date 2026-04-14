@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRoute, navigate } from "./hooks/useRoute";
 import { Nav, Footer } from "./components/layout";
 import { ErrorBanner } from "./components/ui";
@@ -18,7 +18,13 @@ import { Decorations }       from "./themes/Decorations";
 import { initMeta, setPageMeta } from "./lib/meta";
 import { prefetchFestivalData, useGraphQLPageAttente } from "./hooks/useWordPress";
 import { PageAttentePage } from "./pages/PageAttentePage";
+import { StagingGate }     from "./pages/StagingGate";
 import { FORCE_WAITING_PAGE } from "./config/site";
+
+const STAGING_HOST     = "francomanias.netlify.app";
+const STAGING_PASSWORD = import.meta.env.VITE_STAGING_PASSWORD as string | undefined;
+const isStaging        = window.location.hostname === STAGING_HOST
+                      || window.location.hostname.endsWith(".netlify.app");
 
 // ─── Application du thème ─────────────────────────────────────────────────────
 const _theme = THEMES[ACTIVE_THEME];
@@ -82,6 +88,10 @@ export default function App() {
   const { route, slug, anchor } = useRoute();
   const { data: waitData, status: waitStatus, refetch: refetchWait } = useGraphQLPageAttente();
 
+  const [stagingAuth, setStagingAuth] = useState(
+    () => sessionStorage.getItem("staging-auth") === "ok"
+  );
+
   // Calcul anticipé de displayDate (nécessaire pour l'effet ci-dessous)
   const waitFields     = waitData?.pageDattente?.pageAttente ?? null;
   const displayDateStr = waitFields?.dateDaffichageDuSite ?? null;
@@ -128,6 +138,11 @@ export default function App() {
     }, msUntil);
     return () => clearTimeout(t);
   }, [displayDate, refetchWait]);
+  // Staging : demande un mot de passe sur *.netlify.app
+  if (isStaging && STAGING_PASSWORD && !stagingAuth) {
+    return <StagingGate onSuccess={() => { sessionStorage.setItem("staging-auth", "ok"); setStagingAuth(true); }} />;
+  }
+
   if (!FORCE_WAITING_PAGE && waitStatus === "loading") return null;
   if (FORCE_WAITING_PAGE || (displayDate !== null && new Date() < displayDate)) {
     return <PageAttentePage fields={waitFields} />;
