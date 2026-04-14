@@ -21,10 +21,8 @@ import { PageAttentePage } from "./pages/PageAttentePage";
 import { StagingGate }     from "./pages/StagingGate";
 import { FORCE_WAITING_PAGE } from "./config/site";
 
-const STAGING_HOST     = "francomanias.netlify.app";
-const STAGING_PASSWORD = import.meta.env.VITE_STAGING_PASSWORD as string | undefined;
-const isStaging        = window.location.hostname === STAGING_HOST
-                      || window.location.hostname.endsWith(".netlify.app");
+const STAGING_HASH = import.meta.env.VITE_STAGING_HASH as string | undefined;
+const isStaging    = window.location.hostname.endsWith(".netlify.app");
 
 // ─── Application du thème ─────────────────────────────────────────────────────
 const _theme = THEMES[ACTIVE_THEME];
@@ -89,7 +87,7 @@ export default function App() {
   const { data: waitData, status: waitStatus, refetch: refetchWait } = useGraphQLPageAttente();
 
   const [stagingAuth, setStagingAuth] = useState(
-    () => sessionStorage.getItem("staging-auth") === "ok"
+    () => STAGING_HASH != null && sessionStorage.getItem("staging-auth") === STAGING_HASH
   );
 
   // Calcul anticipé de displayDate (nécessaire pour l'effet ci-dessous)
@@ -139,8 +137,8 @@ export default function App() {
     return () => clearTimeout(t);
   }, [displayDate, refetchWait]);
   // Staging : demande un mot de passe sur *.netlify.app
-  if (isStaging && STAGING_PASSWORD && !stagingAuth) {
-    return <StagingGate onSuccess={() => { sessionStorage.setItem("staging-auth", "ok"); setStagingAuth(true); }} />;
+  if (isStaging && STAGING_HASH && !stagingAuth) {
+    return <StagingGate onSuccess={(hash) => { sessionStorage.setItem("staging-auth", hash); setStagingAuth(true); }} />;
   }
 
   // Sur staging authentifié → on bypass la page d'attente

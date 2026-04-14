@@ -3,15 +3,28 @@ import { HeroCanvas } from "../components/ui";
 import { SOCIAL_LINKS } from "../config/site";
 import logoCompact from "../assets/logo/francomanias-compact-2026.svg";
 
-export function StagingGate({ onSuccess }: { onSuccess: () => void }) {
-  const [value, setValue]   = useState("");
-  const [error, setError]   = useState(false);
+/** Hash SHA-256 du mot de passe saisi → comparé au hash stocké en env var */
+export async function hashPassword(password: string): Promise<string> {
+  const buf = await crypto.subtle.digest(
+    "SHA-256",
+    new TextEncoder().encode(password)
+  );
+  return Array.from(new Uint8Array(buf))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
 
-  function handleSubmit(e: React.FormEvent) {
+export function StagingGate({ onSuccess }: { onSuccess: (hash: string) => void }) {
+  const [value, setValue] = useState("");
+  const [error, setError] = useState(false);
+
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const expected = import.meta.env.VITE_STAGING_PASSWORD as string | undefined;
-    if (expected && value === expected) {
-      onSuccess();
+    const expectedHash = import.meta.env.VITE_STAGING_HASH as string | undefined;
+    if (!expectedHash) return;
+    const enteredHash = await hashPassword(value);
+    if (enteredHash === expectedHash) {
+      onSuccess(enteredHash);
     } else {
       setError(true);
       setValue("");
