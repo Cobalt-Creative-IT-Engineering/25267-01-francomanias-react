@@ -22,7 +22,8 @@ import { StagingGate, hashPassword } from "./pages/StagingGate";
 import { FORCE_WAITING_PAGE } from "./config/site";
 
 const STAGING_PASSWORD = import.meta.env.VITE_STAGING_PASSWORD as string | undefined;
-const isStaging        = window.location.hostname.endsWith(".netlify.app");
+const isStaging        = window.location.hostname.endsWith(".netlify.app")
+                      || window.location.hostname === "localhost";
 
 // ─── Application du thème ─────────────────────────────────────────────────────
 const _theme = THEMES[ACTIVE_THEME];

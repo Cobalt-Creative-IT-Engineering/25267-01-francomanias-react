@@ -99,7 +99,7 @@ export function ProgrammationPage({ initialSlug }: { initialSlug?: string } = {}
                 >
                   Tout
                 </button>
-                {(lieuTerms ?? []).map((term) => (
+                {(lieuTerms ?? []).slice().sort((a, b) => a.slug.localeCompare(b.slug)).map((term) => (
                   <button
                     key={term.id}
                     className={`filter-chip${selectedLieu === term.id ? " active" : ""}`}
@@ -127,7 +127,7 @@ export function ProgrammationPage({ initialSlug }: { initialSlug?: string } = {}
           </button>
           {jourStatus === "loading"
             ? Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-3 w-20" />)
-            : (jourTerms ?? []).map((term) => (
+            : (jourTerms ?? []).slice().sort((a, b) => a.slug.localeCompare(b.slug)).map((term) => (
                 <button
                   key={term.id}
                   className={`filter-chip${selectedJour === term.id ? " active" : ""}`}
