@@ -201,9 +201,10 @@ export type GQLInfosPratiques = {
       description?: string;
       photo?: { node: { sourceUrl: string; altText?: string } } | null;
     }>;
-    restaurationContenu?: string;
-    securiteContenu?:     string;
-    hebergementContenu?:  string;
+    restaurationContenu?:         string;
+    securiteContenu?:             string;
+    hebergementContenu?:          string;
+    lesDouvesEtSamediEnFamille?:  string;
   };
 };
 

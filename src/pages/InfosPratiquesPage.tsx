@@ -10,12 +10,13 @@ import sticker03 from "../assets/images/stickers/Franco2026_Sticker_03.png";
 import sticker07 from "../assets/images/stickers/Franco2026_Sticker_07.png";
 
 const NAV = [
-  { label: "Transports & Accès",  id: "transports" },
-  { label: "Horaires",            id: "horaires" },
-  { label: "Scènes & Lieux",      id: "scenes" },
-  { label: "Restauration & Bars", id: "restauration" },
-  { label: "Sécurité",            id: "securite" },
-  { label: "Hébergement",         id: "hebergement" },
+  { label: "Transports & Accès",          id: "transports" },
+  { label: "Horaires",                    id: "horaires" },
+  { label: "Scènes & Lieux",             id: "scenes" },
+  { label: "Les Douves & Samedi en famille", id: "douves" },
+  { label: "Restauration & Bars",         id: "restauration" },
+  { label: "Sécurité",                   id: "securite" },
+  { label: "Hébergement",                id: "hebergement" },
 ] as const;
 
 function scrollToSection(id: string) {
@@ -39,6 +40,7 @@ export function InfosPratiquesPage() {
     restauration: ip?.restaurationContenu,
     securite:     ip?.securiteContenu,
     hebergement:  ip?.hebergementContenu,
+    douves:       ip?.lesDouvesEtSamediEnFamille,
   };
 
   return (
