@@ -113,6 +113,8 @@ export type PartenaireEntry = {
   acf?: {
     logo?: number | { url: string; alt?: string };
     lien?: string;
+    nom?: string;
+    ordre?: number | string;
     categorie_du_partenaire?: number[];
   };
   /** IDs des termes de taxonomie "categorie" */

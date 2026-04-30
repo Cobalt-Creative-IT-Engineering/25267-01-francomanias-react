@@ -1,10 +1,12 @@
 import React, { useMemo, useRef, useState } from "react";
 import { useCPT, useTaxonomyTerms, useMediaBatch, useGraphQLProgrammationOptions } from "../hooks/useWordPress";
 import { acfReader } from "../components/acf";
+import { byOrdreNom } from "../lib/sort";
 import { ErrorBanner, Skeleton, Sticker } from "../components/ui";
 import { ArtistACF } from "../config/acf-schemas";
 import type { ProgrammationEntry } from "../types/wordpress";
 import sticker04 from "../assets/images/stickers/Franco2026_Sticker_04.png";
+import sticker05 from "../assets/images/stickers/Franco2026_Sticker_05.png";
 
 const LazyArtistModal = React.lazy(() => import("./ArtistModal"));
 
@@ -70,11 +72,14 @@ export function ProgrammationPage({ initialSlug }: { initialSlug?: string } = {}
     }
   }, [mediaMap]);
 
-  const visibleItems = items.filter((item) => {
-    const matchJour = selectedJour ? (item.jour ?? []).includes(selectedJour) : true;
-    const matchLieu = selectedLieu ? (item.lieu ?? []).includes(selectedLieu) : true;
-    return matchJour && matchLieu;
-  });
+  const visibleItems = useMemo(() => {
+    const filtered = items.filter((item) => {
+      const matchJour = selectedJour ? (item.jour ?? []).includes(selectedJour) : true;
+      const matchLieu = selectedLieu ? (item.lieu ?? []).includes(selectedLieu) : true;
+      return matchJour && matchLieu;
+    });
+    return [...filtered].sort(byOrdreNom);
+  }, [items, selectedJour, selectedLieu]);
   const noneVisible = items.length > 0 && visibleItems.length === 0;
 
   return (
@@ -156,7 +161,15 @@ export function ProgrammationPage({ initialSlug }: { initialSlug?: string } = {}
         <ErrorBanner message={error ?? "Erreur de chargement"} />
       ) : (
         <>
-          {noneVisible && <ErrorBanner message="Aucun artiste n'est disponible pour ces filtres." />}
+          {noneVisible && (
+            <div className="program-empty">
+              <div className="program-empty-sticker">
+                <img src={sticker05} alt="" aria-hidden="true" />
+                <span>🎵</span>
+              </div>
+              <p className="program-empty-text">Aucun artiste pour cette sélection.</p>
+            </div>
+          )}
           <div className="program-grid-container">
             <Sticker src={sticker04} size={110} rotate={8} style={{ top: -40, right: -10 }} />
             <div className="program-grid">

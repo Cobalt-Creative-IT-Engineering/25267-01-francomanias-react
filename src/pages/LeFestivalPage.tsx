@@ -6,6 +6,7 @@ import { useGraphQLOptions, useCPT, useMediaBatch, useTaxonomyTerms } from "../h
 import { useScrollSpy } from "../hooks/useScrollSpy";
 import { WPContent, Sticker } from "../components/ui";
 import type { AncieneEditionEntry, PartenaireEntry } from "../types/wordpress";
+import { byOrdreTitre } from "../lib/sort";
 import sticker09 from "../assets/images/stickers/Franco2026_Sticker_09.png";
 import sticker01 from "../assets/images/stickers/Franco2026_Sticker_01.png";
 import sticker08 from "../assets/images/stickers/Franco2026_Sticker_08.png";
@@ -247,9 +248,9 @@ export function LeFestivalPage() {
 
               if (cats) {
                 return [...cats].sort((a, b) => a.slug.localeCompare(b.slug)).map((cat) => {
-                  const catPartners = partenaires.filter((p) =>
-                    (p.categorie ?? []).includes(cat.id)
-                  );
+                  const catPartners = partenaires
+                    .filter((p) => (p.categorie ?? []).includes(cat.id))
+                    .sort(byOrdreTitre);
                   if (catPartners.length === 0) return null;
                   return (
                     <div key={cat.id} className="ip-partners-category">
@@ -264,7 +265,7 @@ export function LeFestivalPage() {
 
               return (
                 <div className="ip-partners-grid-3">
-                  {partenaires.map(renderPartner)}
+                  {[...partenaires].sort(byOrdreTitre).map(renderPartner)}
                 </div>
               );
             })()}

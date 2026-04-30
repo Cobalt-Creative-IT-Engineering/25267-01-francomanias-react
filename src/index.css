@@ -1083,6 +1083,8 @@ a {
     flex-direction: column;
     gap: 1rem;
     padding-bottom: 0.5rem;
+    padding-right: 0.75rem;
+    margin-right: -0.25rem;
     scrollbar-width: thin;
     scrollbar-color: var(--color-1, var(--accent)) transparent;
   }
@@ -1305,6 +1307,46 @@ a {
     height: 120px;
     margin-top: 2rem;
     overflow: visible;
+  }
+
+  .program-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 4rem 1rem;
+    text-align: center;
+    color: var(--text-secondary);
+  }
+
+  .program-empty-sticker {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    transform: rotate(-8deg);
+  }
+
+  .program-empty-sticker img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .program-empty-sticker span {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+    font-size: 2rem;
+    filter: grayscale(1) brightness(10);
+  }
+
+
+  .program-empty-text {
+    font-size: 1rem;
+    margin: 0;
   }
 
   .program-grid-container {
@@ -2112,7 +2154,13 @@ a {
     flex-wrap: wrap;
     justify-content: center;
     align-items: baseline;
-    gap: 0 0.15em;
+    gap: 0.5rem 0.15em;
+  }
+
+  @media screen and (max-width: 960px) {
+    .lineup-names {
+      gap: 0rem 0.15em;
+    }
   }
 
   .lineup-name {
@@ -2120,6 +2168,7 @@ a {
     text-decoration: none;
     position: relative;
     transition: color 0.2s;
+    line-height: 2rem;
   }
 
   .lineup-name::after {
@@ -2232,7 +2281,8 @@ a {
   }
 
   .partner-logo {
-    height: 80px;
+    height: 200px;
+    width: 300px;
     max-width: 100%;
     padding: 0.5rem;
     object-fit: contain;
@@ -2288,8 +2338,8 @@ a {
 
   .ip-partners-grid-3 .partner-logo {
     max-width: 100%;
-    height: auto;
-    max-height: 60px;
+    height: 200px;
+    width: 300px;
     object-fit: contain;
   }
 
@@ -2909,6 +2959,40 @@ a {
     margin: 4rem auto;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
+
+  .not-found-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    text-align: center;
+  }
+
+  .not-found-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .not-found-code {
+    font-family: var(--font-display);
+    font-size: clamp(5rem, 20vw, 12rem);
+    font-weight: 900;
+    line-height: 1;
+    color: var(--accent);
+  }
+
+  .not-found-title {
+    font-size: clamp(1.25rem, 3vw, 2rem);
+    font-weight: 700;
+    margin: 0;
+  }
+
+  .not-found-text {
+    color: var(--text-secondary);
+    margin: 0;
+  }
 
   .edition-not-found {
     text-align: center;

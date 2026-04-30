@@ -88,13 +88,12 @@ export function InfosPratiquesPage() {
                     ))}
                   </div>
                 )}
-                {item.id === "scenes"      && <Sticker src={sticker03} size={120} rotate={-7}  style={{ bottom: -100, right: -20 }} />}
-                {item.id === "hebergement" && <Sticker src={sticker07} size={120} rotate={10}  style={{ bottom: 0, right: -20 }} />}
+                {item.id === "scenes" && <Sticker src={sticker03} size={120} rotate={-7} style={{ bottom: -100, right: -20 }} />}
               </div>
             );
           })}
         </section>
-
+        <Sticker src={sticker07} size={120} rotate={10} style={{ bottom: "4rem", right: "1rem" }} />
       </div>
     </main>
   );

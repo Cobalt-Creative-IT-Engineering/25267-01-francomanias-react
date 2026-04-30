@@ -1,5 +1,6 @@
 import React from "react";
-import { useCPT, useMediaBatch, prefetchCPTItems } from "../hooks/useWordPress";
+import { useCPT, useMediaBatch, useTaxonomyTerms, prefetchCPTItems } from "../hooks/useWordPress";
+import { byOrdreNom, byOrdreTitre } from "../lib/sort";
 import { Sticker, HeroCanvas } from "../components/ui";
 import type { ActualiteEntry, PartenaireEntry, ProgrammationEntry } from "../types/wordpress";
 import logoCompact from "../assets/logo/francomanias-compact-2026.svg";
@@ -53,7 +54,14 @@ export function HomePage() {
     orderby: "date",
     order: "desc",
   });
-  const { data: partenaires } = useCPT<PartenaireEntry>("partenaire", { perPage: 50 });
+  const { data: partenairesAll } = useCPT<PartenaireEntry>("partenaire", { perPage: 50 });
+  const { data: catTerms } = useTaxonomyTerms("categorie");
+  const principauxId = catTerms?.find(
+    (t) => t.slug === "principaux" || t.name.toLowerCase() === "principaux"
+  )?.id ?? null;
+  const partenaires = (principauxId
+    ? (partenairesAll ?? []).filter((p) => (p.categorie ?? []).includes(principauxId))
+    : (partenairesAll ?? [])).sort(byOrdreTitre);
   const { data: artistes }    = useCPT<ProgrammationEntry>("artiste", { perPage: 100, orderby: "date", order: "asc" });
 
   // Résolution batch de tous les IDs média (photos actualités + logos partenaires)
@@ -169,7 +177,7 @@ export function HomePage() {
           <a href="/programmation" className="lineup-link">Line-Up</a>
           {artistes && artistes.length > 0 && (
             <p className="lineup-names">
-              {artistes.map((a, i) => {
+              {[...(artistes)].sort(byOrdreNom).map((a, i) => {
                 const nom = (a.acf?.nom as string | undefined) || a.title?.rendered || "";
                 return (
                   <React.Fragment key={a.id}>

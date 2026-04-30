@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRoute, navigate } from "./hooks/useRoute";
 import { Nav, Footer } from "./components/layout";
-import { ErrorBanner } from "./components/ui";
 import { HomePage }          from "./pages/HomePage";
 import { ProgrammationPage } from "./pages/ProgrammationPage";
 import { InfosPratiquesPage }     from "./pages/InfosPratiquesPage";
@@ -12,6 +11,7 @@ import { MentionsLegalesPage }    from "./pages/MentionsLegalesPage";
 import { ConditionsGeneralesPage } from "./pages/ConditionsGeneralesPage";
 import { BilletteriePage }    from "./pages/BilletteriePage";
 import { WPPageView }        from "./pages/WPPageView";
+import { NotFoundPage }      from "./pages/NotFoundPage";
 import { ACTIVE_THEME }      from "./config/site";
 import { THEMES }            from "./themes/index";
 import { Decorations }       from "./themes/Decorations";
@@ -182,5 +182,5 @@ function PageView({ route, slug }: { route: string; slug: string | null }) {
   if (route === "/mentions-legales")        return <MentionsLegalesPage />;
   if (route === "/conditions-generales")    return <ConditionsGeneralesPage />;
   if (route.startsWith("/page/") && slug)   return <WPPageView slug={slug} />;
-  return <ErrorBanner message="Page non trouvée" />;
+  return <NotFoundPage />;
 }
