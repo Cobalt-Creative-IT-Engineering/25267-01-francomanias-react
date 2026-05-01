@@ -57,11 +57,15 @@ export function HomePage() {
   const { data: partenairesAll } = useCPT<PartenaireEntry>("partenaire", { perPage: 50 });
   const { data: catTerms } = useTaxonomyTerms("categorie");
   const principauxId = catTerms?.find(
-    (t) => t.slug === "principaux" || t.name.toLowerCase() === "principaux"
+    (t) => t.slug === "sponsors-principaux" || t.name.toLowerCase() === "sponsors principaux"
   )?.id ?? null;
-  const partenaires = (principauxId
-    ? (partenairesAll ?? []).filter((p) => (p.categorie ?? []).includes(principauxId))
-    : (partenairesAll ?? [])).sort(byOrdreTitre);
+  // catTerms undefined = encore en chargement → on attend avant de filtrer
+  const partenaires = (catTerms === undefined
+    ? []
+    : principauxId
+      ? (partenairesAll ?? []).filter((p) => (p.categorie ?? []).includes(principauxId))
+      : (partenairesAll ?? [])
+  ).sort(byOrdreTitre);
   const { data: artistes }    = useCPT<ProgrammationEntry>("artiste", { perPage: 100, orderby: "date", order: "asc" });
 
   // Résolution batch de tous les IDs média (photos actualités + logos partenaires)

@@ -2926,16 +2926,16 @@ a {
   /* Détail actualité */
   .actu-detail-date {
     font-family: var(--font-body);
-    font-size: clamp(1rem, 8vw, 2.5rem);
-    font-weight: 700;
+    font-size: clamp(1.2rem, 4vw, 1.6rem);
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: var(--ls-display);
+    letter-spacing: -0.05rem !important;
     color: var(--text-secondary);
   }
 
   .actu-detail-title {
     font-family: var(--font-display);
-    font-size: clamp(2rem, 12vw, 4rem) !important;
+    font-size: clamp(2.5rem, 14vw, 5.5rem) !important;
     font-weight: 900;
     text-transform: uppercase;
     letter-spacing: var(--ls-display);
