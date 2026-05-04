@@ -1,7 +1,7 @@
 // ─── Page Le Festival — version ACF/GraphQL ───────────────────────────────────
 // Charge le contenu depuis WPGraphQL (options page leFestival).
 // Partenaires via REST /wp/v2 (CPT). Sections vides si pas de contenu WP.
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { useGraphQLOptions, useCPT, useMediaBatch, useTaxonomyTerms } from "../hooks/useWordPress";
 import { useScrollSpy } from "../hooks/useScrollSpy";
 import { WPContent, Sticker } from "../components/ui";
@@ -64,6 +64,10 @@ export function LeFestivalPage() {
   const photographesLiens  = arr<LienItem>(fest?.leFestivalPresse?.photographesLiens);
   const presseTexte        = str(fest?.leFestivalPresse?.textePresse);
   const photographeTexte   = str(fest?.leFestivalPresse?.textePhotographe);
+
+  const ilsSontVenusTitre    = str(fest?.leFestivalIlsSontVenus?.titre);
+  const ilsSontVenusArtistes = str(fest?.leFestivalIlsSontVenus?.anciensArtistes);
+  const [ilsSontVenusExpanded, setIlsSontVenusExpanded] = useState(false);
 
   const { data: archives }       = useCPT<AncieneEditionEntry>("ancienne-edition", { perPage: 30, orderby: "title", order: "desc" });
   const { data: partenaires }    = useCPT<PartenaireEntry>("partenaire", { perPage: 50 });
@@ -164,6 +168,41 @@ export function LeFestivalPage() {
                   );
                 })}
               </div>
+            </div>
+          )}
+
+          {/* ── Ils sont venus ──────────────────────────────────────────── */}
+          {(ilsSontVenusTitre || ilsSontVenusArtistes) && (
+            <div className="prose-custom ip-section">
+              <blockquote>
+                {ilsSontVenusTitre && <h3>{ilsSontVenusTitre}</h3>}
+                {ilsSontVenusArtistes && (
+                  <>
+                    <p
+                      style={{
+                        whiteSpace: "pre-wrap",
+                        maxHeight: ilsSontVenusExpanded ? "none" : "9em",
+                        overflow: "hidden",
+                        WebkitMaskImage: ilsSontVenusExpanded
+                          ? "none"
+                          : "linear-gradient(180deg, #000 60%, transparent 100%)",
+                        maskImage: ilsSontVenusExpanded
+                          ? "none"
+                          : "linear-gradient(180deg, #000 60%, transparent 100%)",
+                      }}
+                    >
+                      {ilsSontVenusArtistes}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => setIlsSontVenusExpanded((v) => !v)}
+                      className="ils-sont-venus-toggle"
+                    >
+                      {ilsSontVenusExpanded ? "Voir moins" : "Voir plus"}
+                    </button>
+                  </>
+                )}
+              </blockquote>
             </div>
           )}
 

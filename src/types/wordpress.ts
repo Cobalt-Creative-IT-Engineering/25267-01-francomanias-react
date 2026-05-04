@@ -184,6 +184,11 @@ export type GQLLeFestival = {
     textePresse?:        string;
     textePhotographe?:   string;
   };
+  /** group → graphql_field_name: leFestivalIlsSontVenus */
+  leFestivalIlsSontVenus?: {
+    titre?:           string;
+    anciensArtistes?: string;
+  };
 };
 
 /**
