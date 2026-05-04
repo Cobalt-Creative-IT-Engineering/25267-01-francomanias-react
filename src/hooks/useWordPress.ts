@@ -320,6 +320,10 @@ const GQL_ALL_OPTIONS = `
         textePresse
         textePhotographe
       }
+      leFestivalIlsSontVenus {
+        titre
+        anciensArtistes
+      }
     }
     informationsPratiques {
       infosPratiques {
