@@ -10,13 +10,14 @@ import sticker03 from "../assets/images/stickers/Franco2026_Sticker_03.png";
 import sticker07 from "../assets/images/stickers/Franco2026_Sticker_07.png";
 
 const NAV = [
-  { label: "Transports & Accès",          id: "transports" },
-  { label: "Horaires",                    id: "horaires" },
-  { label: "Scènes & Lieux",             id: "scenes" },
-  { label: "Les Douves & Samedi en famille", id: "douves" },
-  { label: "Restauration & Bars",         id: "restauration" },
-  { label: "Sécurité",                   id: "securite" },
-  { label: "Hébergement",                id: "hebergement" },
+  { label: "Transports & Accès",                id: "transports" },
+  { label: "Horaires",                          id: "horaires" },
+  { label: "Scènes & Lieux",                    id: "scenes" },
+  { label: "Espace enfants & Samedi en famille", id: "enfants-samedi" },
+  { label: "Espace jeunesse",                   id: "jeunesse" },
+  { label: "Restauration & Bars",               id: "restauration" },
+  { label: "Sécurité",                          id: "securite" },
+  { label: "Hébergement",                       id: "hebergement" },
 ] as const;
 
 function scrollToSection(id: string) {
@@ -34,13 +35,14 @@ export function InfosPratiquesPage() {
   const lieux = lieuxData?.informationsPratiques?.infosPratiques?.lieuContenu ?? [];
 
   const gqlMap: Record<string, string | undefined> = {
-    transports:   ip?.transportsContenu,
-    horaires:     ip?.horairesContenu,
-    scenes:       ip?.scenesContenu,
-    restauration: ip?.restaurationContenu,
-    securite:     ip?.securiteContenu,
-    hebergement:  ip?.hebergementContenu,
-    douves:       ip?.lesDouvesEtSamediEnFamille,
+    transports:       ip?.transportsContenu,
+    horaires:         ip?.horairesContenu,
+    scenes:           ip?.scenesContenu,
+    "enfants-samedi": ip?.espaceEnfantsEtSamediEnFamille,
+    jeunesse:         ip?.espaceJeunesse,
+    restauration:     ip?.restaurationContenu,
+    securite:         ip?.securiteContenu,
+    hebergement:      ip?.hebergementContenu,
   };
 
   return (

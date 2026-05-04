@@ -329,7 +329,8 @@ const GQL_ALL_OPTIONS = `
         restaurationContenu
         securiteContenu
         hebergementContenu
-        lesDouvesEtSamediEnFamille
+        espaceEnfantsEtSamediEnFamille
+        espaceJeunesse
       }
     }
   }

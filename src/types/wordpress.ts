@@ -201,10 +201,11 @@ export type GQLInfosPratiques = {
       description?: string;
       photo?: { node: { sourceUrl: string; altText?: string } } | null;
     }>;
-    restaurationContenu?:         string;
-    securiteContenu?:             string;
-    hebergementContenu?:          string;
-    lesDouvesEtSamediEnFamille?:  string;
+    restaurationContenu?:             string;
+    securiteContenu?:                 string;
+    hebergementContenu?:              string;
+    espaceEnfantsEtSamediEnFamille?:  string;
+    espaceJeunesse?:                  string;
   };
 };
 
