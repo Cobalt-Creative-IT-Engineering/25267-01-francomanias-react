@@ -1,7 +1,7 @@
 // ─── Page Le Festival — version ACF/GraphQL ───────────────────────────────────
 // Charge le contenu depuis WPGraphQL (options page leFestival).
 // Partenaires via REST /wp/v2 (CPT). Sections vides si pas de contenu WP.
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { useGraphQLOptions, useCPT, useMediaBatch, useTaxonomyTerms } from "../hooks/useWordPress";
 import { useScrollSpy } from "../hooks/useScrollSpy";
 import { WPContent, Sticker } from "../components/ui";
@@ -68,6 +68,7 @@ export function LeFestivalPage() {
   const ilsSontVenusTitre    = str(fest?.leFestivalIlsSontVenus?.titre);
   const ilsSontVenusArtistes = str(fest?.leFestivalIlsSontVenus?.anciensArtistes);
   const [ilsSontVenusExpanded, setIlsSontVenusExpanded] = useState(false);
+  const ilsSontVenusRef = useRef<HTMLQuoteElement>(null);
 
   const { data: archives }       = useCPT<AncieneEditionEntry>("ancienne-edition", { perPage: 30, orderby: "title", order: "desc" });
   const { data: partenaires }    = useCPT<PartenaireEntry>("partenaire", { perPage: 50 });
@@ -174,7 +175,7 @@ export function LeFestivalPage() {
           {/* ── Ils sont venus ──────────────────────────────────────────── */}
           {(ilsSontVenusTitre || ilsSontVenusArtistes) && (
             <div className="prose-custom ip-section">
-              <blockquote>
+              <blockquote ref={ilsSontVenusRef}>
                 {ilsSontVenusTitre && <h3>{ilsSontVenusTitre}</h3>}
                 {ilsSontVenusArtistes && (
                   <>
@@ -195,7 +196,16 @@ export function LeFestivalPage() {
                     </p>
                     <button
                       type="button"
-                      onClick={() => setIlsSontVenusExpanded((v) => !v)}
+                      onClick={() => {
+                        setIlsSontVenusExpanded((v) => {
+                          if (v) {
+                            requestAnimationFrame(() => {
+                              ilsSontVenusRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+                            });
+                          }
+                          return !v;
+                        });
+                      }}
                       className="ils-sont-venus-toggle"
                     >
                       {ilsSontVenusExpanded ? "Voir moins" : "Voir plus"}
