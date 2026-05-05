@@ -1717,8 +1717,89 @@ a {
     text-underline-offset: 3px;
   }
 
+  /* Image sans contexte d'alignement → pleine largeur */
+  /* Mobile : toutes les images en pleine largeur */
   .prose-custom img {
-    @apply rounded-xl w-full my-6;
+    @apply rounded-xl my-4;
+    width: 100%;
+    height: auto;
+  }
+
+  .prose-custom figure {
+    margin: 1rem 0;
+    width: 100%;
+  }
+
+  .prose-custom figure img {
+    @apply rounded-xl;
+    width: 100%;
+    height: auto;
+    margin: 0;
+  }
+
+  /* Desktop : respecter les dimensions et l'alignement WP */
+  @media (min-width: 768px) {
+    .prose-custom img {
+      width: auto;
+      max-width: 100%;
+    }
+
+    .prose-custom figure {
+      max-width: 100%;
+      width: auto;
+    }
+
+    .prose-custom figure img {
+      width: auto;
+      max-width: 100%;
+    }
+
+    .prose-custom .alignleft,
+    .prose-custom figure.alignleft {
+      float: left;
+      margin: 0.5rem 1.5rem 1rem 0;
+      max-width: 50%;
+    }
+
+    .prose-custom .alignright,
+    .prose-custom figure.alignright {
+      float: right;
+      margin: 0.5rem 0 1rem 1.5rem;
+      max-width: 50%;
+    }
+
+    .prose-custom .aligncenter,
+    .prose-custom figure.aligncenter {
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: center;
+    }
+
+    .prose-custom .alignfull,
+    .prose-custom figure.alignfull {
+      width: 100%;
+    }
+
+    .prose-custom .alignfull img,
+    .prose-custom figure.alignfull img {
+      width: 100%;
+    }
+  }
+
+  .prose-custom figcaption {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    text-align: center;
+    margin-top: 0.5rem;
+    font-style: italic;
+  }
+
+  /* Clearfix après contenu avec images flottantes */
+  .prose-custom::after {
+    content: "";
+    display: table;
+    clear: both;
   }
 
   /* blockquote WP → même visuel que .ip-callout */
@@ -1783,11 +1864,23 @@ a {
 
   .prose-custom ul,
   .prose-custom ol {
-    @apply pl-5 mb-5;
+    padding-left: 0;
+    margin-bottom: 1.25rem;
+    list-style: none;
   }
 
   .prose-custom li {
-    @apply mb-1;
+    margin-bottom: 0.25rem;
+  }
+
+  .prose-custom em,
+  .prose-custom i {
+    font-style: italic !important;
+  }
+
+  .prose-custom strong,
+  .prose-custom b {
+    font-weight: 700 !important;
   }
 
   .text-accent {
