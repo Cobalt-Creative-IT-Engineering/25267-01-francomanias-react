@@ -1881,6 +1881,7 @@ a {
   .prose-custom strong,
   .prose-custom b {
     font-weight: 700 !important;
+    color: var(--accent) !important;
   }
 
   .text-accent {
