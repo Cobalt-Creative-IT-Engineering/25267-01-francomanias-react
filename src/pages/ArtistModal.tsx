@@ -50,6 +50,8 @@ export default function ArtistModal({ item, lieuMap, mediaMap, onClose }: Artist
         aria-modal="true"
         onClick={(e) => e.stopPropagation()}
       >
+        <button className="artist-modal-close" onClick={onClose} aria-label="Fermer">×</button>
+
         <div className="artist-modal-inner">
           <Sticker src={sticker09} size={90} rotate={-12} style={{ bottom: 8, left: 8, zIndex: 10 }} />
 
@@ -64,7 +66,7 @@ export default function ArtistModal({ item, lieuMap, mediaMap, onClose }: Artist
           {/* ── Colonne contenu ────────────────────────────────────────── */}
           <div className="artist-modal-body">
 
-            {/* Header fixe : nom + date/lieu + bouton fermeture */}
+            {/* Header : nom + date/lieu */}
             <div className="artist-modal-header">
               <div className="artist-modal-meta">
                 <h2 className="artist-modal-name">{nom}</h2>
@@ -74,7 +76,6 @@ export default function ArtistModal({ item, lieuMap, mediaMap, onClose }: Artist
                   </div>
                 )}
               </div>
-              <button className="artist-modal-close" onClick={onClose} aria-label="Fermer">×</button>
             </div>
 
             {/* Zone scrollable : bio + liens */}

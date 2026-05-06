@@ -979,8 +979,9 @@ a {
     flex-shrink: 0;
     transition: background 0.15s;
     position: absolute;
-    right: 0;
-    top: 0;
+    right: 0.75rem;
+    top: 0.75rem;
+    z-index: 10;
   }
 
   .artist-modal-close:hover {
@@ -1215,10 +1216,12 @@ a {
     }
 
     .artist-modal-close {
-      position: absolute;
-      top: 0.5rem;
-      right: 0.5rem;
-      z-index: 10;
+      position: sticky;
+      top: 0.75rem;
+      align-self: flex-end;
+      margin-right: 0.75rem;
+      margin-bottom: -2rem;
+      z-index: 20;
     }
   }
 
@@ -2274,6 +2277,7 @@ a {
     position: relative;
     transition: color 0.2s;
     line-height: 2rem;
+    text-align: center;
   }
 
   .lineup-name::after {
